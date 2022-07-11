@@ -1,7 +1,6 @@
 import { React, useState } from "react"
-import { Switch, useHistory, Route, useRouteMatch } from "react-router-dom"
+import { useHistory } from "react-router-dom"
 import styled from 'styled-components'
-import LoginForm from './AccountAccess/LoginForm.js'
 
 const MainLoginCont = styled.div`
   width: 70%;
@@ -115,7 +114,8 @@ const ErrorLi = styled.li`
   font-size: 12px;
 `
 
-function Signup({ setIsAuthenticated, setShowLogin, setUser}) {
+function Signup({setIsAuthenticated, setShowLogin, setUser}) {
+  const history = useHistory()
   const [errors, setErrors] = useState([])
   const [userSignupData, setUserSignupData] = useState({
     first_name: "",
@@ -148,8 +148,9 @@ function Signup({ setIsAuthenticated, setShowLogin, setUser}) {
       if (r.ok) {
         r.json()
         .then((user) => {
-          // setUser(user)
-          // setIsAuthenticated(true)
+          setUser(user)
+          setIsAuthenticated(true)
+          history.push("/shop")
         })
       } else {
         r.json().then((err) => setErrors(err.errors))
@@ -165,7 +166,7 @@ return (
   <MainLoginCont>
     <LoginCont>
       <CenterCont>
-        <Image src="https://i.ibb.co/fXCYgsW/Busy-Bee-1.png"/>
+        <Image src="https://i.ibb.co/RcLmfKX/logo2.png"/>
         <LoginForm onSubmit={handleSubmit}>
           <NameCollectionCont>
           <NameInput 

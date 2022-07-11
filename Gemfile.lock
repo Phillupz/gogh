@@ -84,9 +84,6 @@ GEM
       reline (>= 0.2.7)
     digest (3.1.0)
     dotenv (2.7.6)
-    dotenv-rails (2.7.6)
-      dotenv (= 2.7.6)
-      railties (>= 3.2)
     erubi (1.10.0)
     globalid (1.0.0)
       activesupport (>= 5.0)
@@ -178,7 +175,7 @@ DEPENDENCIES
   bcrypt (~> 3.1.7)
   bootsnap
   debug
-  dotenv-rails
+  dotenv
   puma (~> 5.0)
   rails (~> 7.0.3)
   sqlite3 (~> 1.4)

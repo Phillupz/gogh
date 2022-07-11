@@ -1,18 +1,18 @@
 import { React, useState } from "react"
-import {useHistory} from "react-router-dom"
+import { useHistory } from "react-router-dom"
 import styled from 'styled-components'
 
 const MainLoginCont = styled.div`
-width: 70%;
-height: 36em;
-display: grid;
-grid-template-columns: 40% 60%;
-margin-top: 4.5em;
-margin-left:auto;
-margin-right:auto;
-position: relative;
-border: 1.5px solid black;
-border-radius: 7px;
+  width: 70%;
+  height: 36em;
+  display: grid;
+  grid-template-columns: 40% 60%;
+  margin-top: 4.5em;
+  margin-left:auto;
+  margin-right:auto;
+  position: relative;
+  border: 1.5px solid black;
+  border-radius: 7px;
 `
 
 const LoginCont = styled.div`
@@ -70,11 +70,11 @@ const Button = styled.button`
 `
 
 const LoginImage = styled.img`
-margin-top: .05em;
-height: 88.8%;
-width: 100%;
-border-top-right-radius: 7px;
-border-bottom-right-radius: 7px;
+  margin-top: .05em;
+  height: 88.8%;
+  width: 100%;
+  border-top-right-radius: 7px;
+  border-bottom-right-radius: 7px;
 `
 
 const ButtonCont = styled.div`
@@ -96,7 +96,7 @@ const ErrorLi = styled.li`
   font-size: 12px;
 `
 
-function Login({ setShowLogin, setUser, setIsAuthenticated }) {
+function Login({setIsAuthenticated, setShowLogin, setUser }) {
   const history = useHistory()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -116,6 +116,7 @@ function Login({ setShowLogin, setUser, setIsAuthenticated }) {
         .then((user) => {
           setUser(user)
           setIsAuthenticated(true)
+          history.push("/shop")
         })
       } else {
         r.json().then((err) => setErrors(err.errors))
@@ -131,7 +132,7 @@ return (
   <MainLoginCont>
     <LoginCont>
       <CenterCont>
-        <Image src="https://i.ibb.co/fXCYgsW/Busy-Bee-1.png"/>
+        <Image src="https://i.ibb.co/RcLmfKX/logo2.png"/>
         <LoginForm onSubmit={handleSubmit}>
           <LoginInput 
             type="text"
