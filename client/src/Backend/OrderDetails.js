@@ -216,7 +216,7 @@ const CloseCont = styled.div`
 
 `
 
-export default function OrderDetails({ handleStatusChange, selectedOrder, orderItems, visible, setVisible}) {
+export default function OrderDetails({handleOrderDelete, handleStatusChange, selectedOrder, orderItems, visible, setVisible}) {
   const [orderRow, setOrderRow] = useState([])
   const [status, setStatus] = useState({
     new: false,
@@ -316,7 +316,10 @@ export default function OrderDetails({ handleStatusChange, selectedOrder, orderI
       handleStatusChange(e)
     }
 
-      
+    function handleDelete(){
+      const id = selectedOrder.id
+      handleOrderDelete(id)
+    }
       
     return (
       <section>
@@ -365,7 +368,7 @@ export default function OrderDetails({ handleStatusChange, selectedOrder, orderI
                 </InnerInputCont>
               </InputCont>
               <BottomCont>
-                <ButtonCont><Button>Delete</Button></ButtonCont>
+                <ButtonCont><Button onClick={handleDelete}>Delete</Button></ButtonCont>
               </BottomCont>
             </Details>
           </OrderDetailCont>

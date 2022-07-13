@@ -1,5 +1,6 @@
 import {React, useState }from 'react'
 import styled from 'styled-components'
+import Product from '../CategoryPage/Product'
 
 const ProductCont = styled.div`
   height: 5em;
@@ -58,15 +59,20 @@ const StockText = styled.div`
  font-size:16px;
 `
 
-function ProductComp({productVisible, setProductVisible, product}) {
+function ProductComp({ handleProductClick, productVisible, setProductVisible, product}) {
+
+  function productClick() {
+    setProductVisible(!productVisible)
+    handleProductClick(product.id)
+  }
 
   return (
-    <ProductCont onClick={() => setProductVisible(!productVisible)}> 
+    <ProductCont onClick={productClick}> 
       <InnerProductCont>
-        <Image src=''/>
+        <Image src={product.image}/>
         <InfoCont>
-            <ProductName></ProductName>
-            <ProductPrice></ProductPrice>
+            <ProductName>{product.name}</ProductName>
+            <ProductPrice>{`$${product.price}`}</ProductPrice>
         </InfoCont>
       </InnerProductCont>
     </ProductCont>

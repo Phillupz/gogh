@@ -23,7 +23,7 @@ const BackendCont = styled.div`
 
 
 function Backend({products, whiteNav}) {
-  const [selectedItem, setSelectedItem] = useState()
+  const [selectedItem, setSelectedItem] = useState("Orders")
 
   function handleOpenMenu(){
 

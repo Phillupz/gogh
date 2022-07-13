@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from 'react-awesome-modal';
 import styled from "styled-components"
 import { VscAdd } from "react-icons/vsc"
@@ -248,13 +248,41 @@ const ImageIconCont = styled.div`
   align-content:center;
 `
 
-export default function ProductDetails({productVisible, setProductVisible}) {
-  const [images, setImages] = React.useState([]);
-  const maxNumber = 1
-  const onChange = (imageList, addUpdateIndex) => {
-    // console.log(imageList, addUpdateIndex);
-    setImages(imageList);
+export default function ProductDetails({inputData, setInputData, handleProductUpdate, selectedProduct, productVisible, setProductVisible}) {
+  const [images, setImages] = React.useState([])
+  const [image, setImage] = React.useState([])
+
+  console.log(selectedProduct)
+  
+  useEffect(() =>{
+    setImage(selectedProduct.image)
+  }, [selectedProduct])
+
+  function handleChange(e){
+    const name = e.target.name
+    const value = e.target.value
+    setInputData({
+      ...inputData,
+      [name]: value
+    })
+  }
+
+  console.log(inputData)
+  console.log(image)
+
+  function handleSubmit() {
+    handleProductUpdate(image)
+    setInputData({
+      name: "",
+      description: "",
+      price: "",
+    })
+  }
+
+  const onChange = (imageList) => {
+    setImage(imageList[0].data_url)
   };
+
 
 return (
   <section>
@@ -267,20 +295,19 @@ return (
           </ImageHeader>
         <DisplayCont>
           <ImageCont>
-            <ProductImage src="https://i.ibb.co/chqvqG3/starry-night.png"/>
+            <ProductImage name="image" src={image}/>
           </ImageCont>
         </DisplayCont>
           <LeftBottomCont>
             <NewImageCont>
             <ImageUploading
-                multiple
-                value={images}
-                onChange={onChange}
-                maxNumber={maxNumber}
-                dataURLKey="data_url"
-                acceptType={["png"]}
+              value={images}
+              onChange={onChange}
+              maxNumber={50}
+              dataURLKey="data_url"
+              acceptType={["png"]}
             >
-                {({
+              {({
                 imageList,
                 onImageUpload,
                 onImageRemoveAll,
@@ -288,10 +315,13 @@ return (
                 onImageRemove,
                 isDragging,
                 dragProps
-            }) => (
+              }) => (
             <>
              {/* <NewImageCont>Image</NewImageCont> */}
-            <ImageButtonCont onClick={() => onImageUpdate()}>
+            <ImageButtonCont 
+              onClick={onImageUpload}
+              {...dragProps}
+            >
               <AddImageText>Add Image</AddImageText>
               <ImageIconCont>
                 <BsFillImageFill color={'5a5a5a'} size={18}/>
@@ -320,14 +350,14 @@ return (
               </DetailOptions>
             </DetailOptionsWrapper>
             <InputCont>
-              <Input placeholder="Enter Name" />
-              <Input placeholder="Enter Price" />
-              <Description Input placeholder="Enter Description">
+              <Input name="name" onChange={handleChange} placeholder={selectedProduct.name} value={inputData.name}/>
+              <Input name="price" onChange={handleChange} placeholder={selectedProduct.price} value={inputData.price}/>
+              <Description name="description" onChange={handleChange} Input placeholder={selectedProduct.description}>
               </Description>
             </InputCont>
           </DetailsDisplayCont>
           <RightBottomCont>
-            <LeftButtonCont><Button>Update</Button></LeftButtonCont>
+            <LeftButtonCont><Button onClick={handleSubmit}>Update</Button></LeftButtonCont>
             <RightButtonCont><DeleteButton>Delete</DeleteButton></RightButtonCont>
           </RightBottomCont>
         </RightCont>
