@@ -7,6 +7,8 @@ import Checkout from './CheckoutPage/Checkout.js'
 import AccountAccess from './AccountAccess/LoginForm.js'
 import Category from './CategoryPage/Category.js'
 import Product from './ProductPage/Product.js'
+import AdminLogin from './Backend/AdminLogin.js'
+import Backend from './Backend/Backend.js'
 
 const AppCont = styled.div`
   text-align: center;
@@ -26,16 +28,16 @@ function App() {
   const [whiteNav, setWhiteNav] = useState(false)
 
   // useEffect(() => {
-  //   fetch('/authorized_user')
-  //   .then((res) => {
-  //     if (res.ok) {
-  //       res.json()
-  //       .then((user) => {
-  //         setIsAuthenticated(true);
-  //         setUser(user)
-  //       })
-  //     }
-  //   })
+    // fetch('/authorized_user')
+    // .then((res) => {
+    //   if (res.ok) {
+    //     res.json()
+    //     .then((user) => {
+    //       setIsAuthenticated(true);
+    //       setUser(user)
+    //     })
+    //   }
+    // })
   // },[])
 
   useEffect(() => {
@@ -73,17 +75,23 @@ function App() {
   return (
     <AppCont>
       <Switch>
-        <Route exact path='/welcome'>
-          <AccountAccess setIsAuthenticated={setIsAuthenticated} setUser={setUser}/>
+        <Route exact path='/admin/backend'>
+          <Backend products={products} whiteNav={whiteNav}/>
+        </Route>
+        <Route exact path='/admin'>
+          <AdminLogin />
+        </Route>
+        <Route exact path='/checkout'>
+          <Checkout whiteNav={whiteNav} handleToken={handleToken} />
+        </Route>
+        <Route exact path='/product'>
+          <Product whiteNav={whiteNav} setWhiteNav={setWhiteNav}/>
         </Route>
         <Route exact path='/shop'>
           <Category whiteNav={whiteNav} setWhiteNav={setWhiteNav} products={products} onLogout={onLogout} user={user} />
         </Route>
-        <Route exact path='/checkout'>
-          <Checkout handleToken={handleToken} />
-        </Route>
-        <Route exact path='/product'>
-          <Product whiteNav={whiteNav} setWhiteNav={setWhiteNav}/>
+        <Route exact path='/welcome'>
+          <AccountAccess setIsAuthenticated={setIsAuthenticated} setUser={setUser}/>
         </Route>
       </Switch>
     </AppCont>

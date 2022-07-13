@@ -1,0 +1,18 @@
+.star-rating {
+ height: 3em;
+ width: 10em;
+ background-color: blue;
+}
+
+button {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+  }
+  .on {
+    color: #000;
+  }
+  .off {
+    color: #ccc;
+  }

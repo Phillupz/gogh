@@ -1,60 +1,32 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import Nav from '../Navigation/Nav.js'
+import ProductDisplay from './ProductDisplay.js'
+import ProductPiece from './ProductPiece.js'
+import Review from './ReviewBar.js'
+import ProductReview from './ProductReview.js'
 
-const ProductWrapper = styled.div`
-background-color:blue;
-width: 70%;
-margin:auto;
-`
 
-const ProductCont = styled.div`
+function Product({whiteNav, setWhiteNav}) {
 
-`
-
-const ProductImageCont = styled.div`
-
-`
-
-const ProductImage = styled.img`
-
-`
-
-const ProductDescCont = styled.div`
-
-`
-
-const ProductDescription = styled.p`
-  height: 100px;
-  width: 100px;
-`
-
-const BuyButton = styled.div`
-
-`
-
-function Product({whiteNav, setWhiteNav}){
-  
   useEffect(() => {
-    setWhiteNav={}
+    setWhiteNav(false)
   })
 
-  return (
-    <>
-      <Nav />
-      <ProductWrapper>
-        <ProductCont>
-          <ProductImageCont>
-            <ProductImage />
-            <ProductDescCont>
-              <ProductDescription>
-                  Hi!
-              </ProductDescription>
-              <BuyButton></BuyButton>
-            </ProductDescCont>
-          </ProductImageCont>
-        </ProductCont>
-      </ProductWrapper>
+  const mock = [1, 2, 3, 4]
+  const reviews = mock.map((review) => {
+    return <ProductReview />
+  })
+
+  return (      
+    <> 
+      <Nav whiteNav={whiteNav}/>
+      <ProductDisplay />
+      <ProductPiece />
+      <Review />
+      <>
+        {reviews}
+      </>
     </>
   )
 }

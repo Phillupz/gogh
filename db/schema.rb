@@ -30,6 +30,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_05_201449) do
   create_table "order_items", force: :cascade do |t|
     t.integer "order_id"
     t.integer "product_id"
+    t.integer "quantity"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -37,7 +38,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_05_201449) do
   create_table "orders", force: :cascade do |t|
     t.integer "user_id"
     t.integer "total"
-    t.integer "payment_id"
+    t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -73,11 +74,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_05_201449) do
   create_table "users", force: :cascade do |t|
     t.string "first"
     t.string "last"
+    t.string "street"
+    t.string "apt"
+    t.string "city"
+    t.string "state"
+    t.integer "zip"
+    t.string "country"
     t.string "email"
     t.boolean "admin"
-    t.string "stripe_email"
-    t.string "customer_id"
-    t.string "stripe_token"
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

@@ -3,7 +3,7 @@ class CreateOrders < ActiveRecord::Migration[7.0]
     create_table :orders do |t|
       t.integer :user_id
       t.integer :total
-      t.integer :payment_id
+      t.string :status
 
       t.timestamps
     end

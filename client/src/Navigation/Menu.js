@@ -7,7 +7,12 @@ const ShopButton = styled.button`
 `
 
 const ButtonText =styled.p`
-  color: ${props => props.class === true ? "color: white" : "color: black"}
+  text-align: left;
+  padding: 0.7rem 1rem;
+  color:${props => props.class === true ? "white" : "black"};
+  font-size: 18px;
+  padding-top:20px;
+  font-weight: 300;
   
 `
 
@@ -52,12 +57,10 @@ function Menu({whiteNav}) {
       >
       {menuData.submenu ? (
       <>
-      <ShopButton
-        class={whiteNav}
-        type="button" 
+      <ShopButton        type="button" 
         aria-haspopup="menu"
         aria-expanded={dropdown ? "true" : "false"}
-        onClick={() => setDropdown((prev) => !prev)}><ButtonText>SHOP</ButtonText>
+        onClick={() => setDropdown((prev) => !prev)}><ButtonText class={whiteNav}>SHOP</ButtonText>
       </ShopButton>
       <Dropdown dropdown={dropdown} submenu={menuData.submenu} />
       </>

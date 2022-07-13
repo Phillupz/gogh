@@ -58,13 +58,7 @@
   
   .menu-items a,
   .menu-items button {
-    text-align: left;
-    padding: 0.7rem 1rem;
-    color:white;
-    font-family: 'Josefin Sans', sans-serif;
-    font-size: 18px;
-    padding-top:20px;
-    font-weight: 300;
+    
   }
   
   /* .menu-items a:hover,

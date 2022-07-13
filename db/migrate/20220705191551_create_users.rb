@@ -3,11 +3,14 @@ class CreateUsers < ActiveRecord::Migration[7.0]
     create_table :users do |t|
       t.string :first
       t.string :last
+      t.string :street
+      t.string :apt
+      t.string :city
+      t.string :state
+      t.integer :zip
+      t.string :country
       t.string :email
       t.boolean :admin
-      t.string :stripe_email
-      t.string :customer_id
-      t.string :stripe_token
       t.string :password_digest
 
       t.timestamps

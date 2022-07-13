@@ -102,10 +102,13 @@ function Nav({whiteNav, onLogout, setIsAuthenticated, setUser}) {
    const userInitial = "1"
    console.log(userInitial)
 
+   const whiteLogo = "https://i.ibb.co/DtSL2vW/logowhite-removebg-preview.png"
+   const blackLogo = "https://i.ibb.co/KhWHXGN/Logo.png"
+
   return (
     <NavContainer>
       <Logo>
-        <LogoImage src="https://i.ibb.co/DtSL2vW/logowhite-removebg-preview.png"/>
+        <LogoImage src={whiteNav ? whiteLogo : blackLogo}/>
       </Logo>
       <MenuCont>
         <LeftMenuCont>
@@ -116,7 +119,7 @@ function Nav({whiteNav, onLogout, setIsAuthenticated, setUser}) {
         <RightMenuCont>
           <BurgerCont>
             <CartCont>
-              <CartSlider/>
+              <CartSlider whiteNav={whiteNav}/>
             </CartCont>
           </BurgerCont>
         </RightMenuCont>

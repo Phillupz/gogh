@@ -1,5 +1,6 @@
 class OrdersController < ApplicationController
-
+  skip_before_action :authorize
+  
   def index
     orders = Order.all
     render json: orders, status: :created
@@ -7,6 +8,12 @@ class OrdersController < ApplicationController
 
   def show
     order = find_order
+    render json: order, status: :ok
+  end
+
+  def update
+    order = find_order
+    order.update(order_params)
     render json: order, status: :ok
   end
 
@@ -28,7 +35,7 @@ class OrdersController < ApplicationController
   end 
 
   def order_params 
-    params.permit(:user_id, :total, :payment_id)
+    params.permit(:user_id, :total, :status)
   end 
 
 end

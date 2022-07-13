@@ -1,13 +1,13 @@
 class UsersController < ApplicationController
   rescue_from ActiveRecord::RecordInvalid, with: :unprocessable  
-  
+  before_action :authorize
+
   def index 
     render json: User.all
   end
 
   def show
-    current_user = User.find_by(id: session[:current_user])
-    render json: current_user, status: :ok
+    render json: @current_user, status: :ok
   end
  
   def create
@@ -32,7 +32,7 @@ class UsersController < ApplicationController
   end 
   
   def user_params
-    params.permit(:first, :last, :stripe_email, :stripeToken, :customer_id, :admin, :email, :password_digest)
+    params.permit(:first, :last, :admin, :email, :password_digest)
   end
 
 end

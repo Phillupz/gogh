@@ -1,0 +1,31 @@
+{
+  "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.1",
+    "@babel/node": "^7.10.5",
+    "@babel/polyfill": "^7.10.4",
+    "@babel/preset-env": "^7.11.0",
+    "@babel/preset-react": "^7.10.4",
+    "husky": "^4.2.5",
+    "jest": "^26.4.0",
+    "leasot": "^11.1.0",
+    "prettier": "^2.0.5"
+  },
+  "scripts": {
+    "build": "rm -rf dist ; yarn ; babel src --out-dir dist ; cp -rf src/fonts dist/fonts ; cp -rf src/css dist/css ; rm -rf node_modules",
+    "prettify": "yarn prettier --write \"**/*.js\"",
+    "test": "jest"
+  },
+  "name": "react-apple-pay-button",
+  "version": "0.0.1-alpha.0",
+  "description": "... It's an Apple Pay button. For React. 🤷‍♀️",
+  "main": "dist",
+  "repository": "https://github.com/cawfree/react-apple-pay-button",
+  "author": "Alex Thomas (@cawfree) <hello@cawfree.com>",
+  "license": "MIT",
+  "private": false,
+  "peerDependencies": {
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1"
+  }
+}

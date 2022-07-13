@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import styled from 'styled-components'
 import SlidingPane from "react-sliding-pane";
-import "react-sliding-pane/dist/react-sliding-pane.css";
+import "./Sliding.css";
 import {BsCartDash} from 'react-icons/bs'
 import {AiOutlineRight} from 'react-icons/ai'
 import {AiOutlineClose} from 'react-icons/ai'
@@ -15,7 +15,6 @@ const CartWrapper = styled.div`
 const Burger = styled.button`
   background: transparent; 
   border:none;
-  0 0 5px #ff0000
 `
 
 const CartHeader = styled.div`
@@ -126,7 +125,7 @@ const IconCont = styled.div`
   height: 2em;
 `
 
-function CartSlider() {
+function CartSlider({whiteNav}) {
   const [state, setState] = useState({
     isPaneOpen: false,
     isPaneOpenLeft: false,
@@ -172,7 +171,7 @@ function CartSlider() {
   return (
     <div>
       <Burger onClick={() => setState({ isPaneOpen: true })}>
-        <BsCartDash color={"white"} size={24}/>
+        <BsCartDash color={whiteNav ? "white" : "black"} size={24}/>
       </Burger>
       <SlidingPane
         className="custom"
