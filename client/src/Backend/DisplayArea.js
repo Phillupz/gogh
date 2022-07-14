@@ -8,6 +8,8 @@ import { AiOutlineClose } from "react-icons/ai"
 import ProductDetails from './ProductDetails.js'
 import Review from './Review.js'
 import ReviewDetails from './ReviewDetails.js'
+import {BsFillImageFill} from 'react-icons/bs'
+import NewProduct from './NewProduct.js'
 
 
 const OrderCont = styled.div`
@@ -56,6 +58,7 @@ const ReviewDisplay = styled.div`
   overflow-x: hidden;
   overflow-y: scroll; 
   scroll-behavior: auto;
+  padding-right: 3em;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -96,16 +99,79 @@ const TotalCont = styled.p`
   color:black;
 `
 
+const ProductCont = styled.div`
+  height: 5em;
+  width: 100%;
+  position: relative;
+  display: grid;
+  justify-items:center;
+  align-content:center;
+  border: 1px solid transparent;
+  transition: .5s;
+  &&:hover {
+    border: 1px solid #ccc;
+  }
+`
+
+const InnerProductCont = styled.div`
+  height: 4.5em;
+  width: 99%;
+  display: grid;
+  align-content:center;
+  grid-template-columns: 10% 90%;
+  padding:1%;
+  cursor: pointer;
+  top: 1px;
+  right: 1px;
+`
+
+const Image = styled.img`
+  height: 70px;
+  width: 70px;
+`
+
+const InfoCont =styled.div`
+  display: grid;
+  grid-template-columns: 90% 10% 
+`
+
+const ProductName = styled.p`
+  text-align:Left;
+  display: grid;
+  align-items: center;
+  color:black;
+`
+
+const ProductPrice = styled.p`
+  display: grid;
+  justify-content:center;
+  align-items: center;
+  color:black;
+  border-left: 1px solid #eee;
+`
+
+const ImageIconCont = styled.div`
+  height: 100%;
+  width: 100%;
+  display: grid;
+  justify-items:center;
+  align-content:center;
+  width: 70px;
+`
+
 function DisplayArea({selectedItem}) {
   const [visible, setVisible] = useState(false)
   const [productVisible, setProductVisible] = useState(false)
+  const [newProdVis, setNewProdVis] = useState(false)
   const [reviewVisible, setReviewVisible] = useState(false)
   const [orders, setOrders] = useState([])
   const [products, setProducts] = useState([])
   const [reviews, setReviews] = useState([])
+  const [orderItems, setOrderItems] = useState([])
   const [selectedOrder, setSelectedOrder] = useState([])
   const [selectedProduct, setSelectedProduct] = useState([])
-  const [orderItems, setOrderItems] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState("Enter Category")
+  const [selectedReview, setSelectedReview] = useState("")
   const [status, setStatus] = useState({
     new: false,
     shipped: false,
@@ -116,6 +182,40 @@ function DisplayArea({selectedItem}) {
     description: "",
     price: "",
   })
+  const [newProdData, setNewProdData] = useState({
+    name: "",
+    description: "",
+    price: "",
+  })
+
+  console.log(selectedReview.user)
+
+  function hanleReviewClick(id){
+    fetch(`/reviews/${id}`)
+    .then((r) => r.json())
+    .then((data) => setSelectedReview(data))
+  }
+  
+  function handleReviewDelete(id) {
+    fetch(`/reviews/${id}`,{
+      method: 'DELETE',
+    })
+    const updatedReview = reviews.filter((review) => {
+      return review.id !== id
+    })
+    setReviews(updatedReview)
+  }
+
+  function handleProductDelete(id){
+    fetch(`/products/${selectedProduct.id}`,{
+      method: 'DELETE',
+    })
+    const updatedProducts = products.filter((product) => {
+      return product.id !== id 
+    })
+    setProductVisible(!productVisible)
+    setProducts(updatedProducts)
+  }
 
   useEffect(() => {
     fetch(`/${selectedItem.toLowerCase()}`)
@@ -123,13 +223,13 @@ function DisplayArea({selectedItem}) {
     .then((data) => {
       switch(selectedItem) {
         case 'Orders':
-          return setOrders(data)
+          return setOrders(data.reverse())
         case 'Products':
-          return setProducts(data)
+          return setProducts(data.reverse())
         case 'Reviews':
-          return setReviews(data)
+          return setReviews(data.reverse())
         default:
-          return setOrders(data)
+          return setOrders(data.reverse())
       }
     })
   }, [selectedItem])
@@ -167,8 +267,6 @@ function DisplayArea({selectedItem}) {
     setVisible(!visible)
   }
 
-
-
   function handleProductClick(id){
     fetch(`/products/${id}`)
     .then((r) => r.json())
@@ -202,9 +300,30 @@ function DisplayArea({selectedItem}) {
      },
         body: JSON.stringify(configObj)
       })
-
     }
 
+    function handleProductAdd(image) {
+      setNewProdVis(!newProdVis)
+      const configObj = {
+        name: newProdData.name, 
+        description: newProdData.description,
+        price: newProdData.price,
+        category: selectedCategory,
+        image: image
+      }
+      console.log(configObj)
+      const updatedProducts = [configObj, ...products]
+      setProducts(updatedProducts)
+      fetch(`/products`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+       },
+          body: JSON.stringify(configObj)
+        })
+        .then((r) => r.json())
+        .then((data) => console.log(data))
+    }
 
   const orderComps = orders.map((order) => {
     return (
@@ -226,7 +345,7 @@ function DisplayArea({selectedItem}) {
   })
 
   const reviewComps = reviews.map((review) => {
-    return <Review reviewVisible={reviewVisible} setReviewVisible={setReviewVisible}/>
+    return <Review hanleReviewClick={hanleReviewClick} review={review} reviewVisible={reviewVisible} setReviewVisible={setReviewVisible}/>
   })
 
   const displayedComp = (() => {
@@ -234,7 +353,21 @@ function DisplayArea({selectedItem}) {
       case 'Orders':
         return <OrderDisplay>{orderComps}</OrderDisplay>
       case 'Products':
-        return <ProductDisplay>{productComps}</ProductDisplay>
+        return (
+          <ProductDisplay>
+            <ProductCont onClick={() => setNewProdVis(!newProdVis)}> 
+              <InnerProductCont>
+                <ImageIconCont>
+                  <BsFillImageFill color={'5a5a5a'} size={30}/>
+                </ImageIconCont>
+                <InfoCont>
+                  <ProductName>Add New</ProductName>
+                  <ProductPrice>Price</ProductPrice>
+                </InfoCont>
+              </InnerProductCont>
+            </ProductCont>
+            {productComps}
+          </ProductDisplay>)
       case 'Reviews':
         return <ReviewDisplay>{reviewComps}</ReviewDisplay>
       default:
@@ -245,9 +378,10 @@ function DisplayArea({selectedItem}) {
   return (
     <OrderCont>
       {displayedComp}
-      <ProductDetails handleProductUpdate={handleProductUpdate} inputData={inputData} setInputData={setInputData} selectedProduct={selectedProduct} productVisible={productVisible} setProductVisible={setProductVisible}/>
+      <NewProduct handleProductAdd={handleProductAdd} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} newProdData={newProdData} setNewProdData={setNewProdData} newProdVis={newProdVis} setNewProdVis={setNewProdVis}/>
+      <ProductDetails handleProductDelete={handleProductDelete} handleProductUpdate={handleProductUpdate} inputData={inputData} setInputData={setInputData} selectedProduct={selectedProduct} productVisible={productVisible} setProductVisible={setProductVisible}/>
       <OrderDetails handleOrderDelete={handleOrderDelete} status={status} handleStatusChange={handleStatusChange} orderItems={orderItems} selectedOrder={selectedOrder} visible={visible} setVisible={setVisible}/>
-      <ReviewDetails reviewVisible={reviewVisible} setReviewVisible={setReviewVisible}/>
+      <ReviewDetails handleReviewDelete={handleReviewDelete} selectedReview={selectedReview} reviewVisible={reviewVisible} setReviewVisible={setReviewVisible}/>
     </OrderCont>
   )
 }

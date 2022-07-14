@@ -8,6 +8,8 @@ import OrderItem from "./OrderItem.js"
 import {AiOutlineClose} from 'react-icons/ai'
 import {BsFillImageFill} from 'react-icons/bs'
 import ImageUploading from "react-images-uploading";
+import Menu from './Menu.js'
+
 
 const ProductDetailsCont = styled.div`
   height:100%;
@@ -108,11 +110,12 @@ const Input = styled.input`
   font-size: 16px;
   outline: none;
   border: 1px solid #eee;
-  margin-top: 6px;
+  margin-top: 8px;
   width: 97%;
   font-family: Josefin Sans, sans-serif;
   padding-left:8px;
-  transition: .5s;
+  transition: .5s; 
+  color: black;
   &&:hover {
     border: 1px solid #ccc;
   }
@@ -123,7 +126,7 @@ const Description = styled.textarea`
   border: 1px solid #eee;
   font-size: 16px;
   outline: none;
-  margin-top: 6px;
+  margin-top: 8px;
   font-family: Josefin Sans, sans-serif;
   width: 97%;
   resize:vertical;
@@ -143,27 +146,14 @@ const RightBottomCont = styled.div`
   width: 100%;
   border-top: 1px solid #eee;
   display: grid;
-  align-content: center;
-  text-align:left;
-  grid-template-columns: 50% 50%;
+  justify-content:center;
 `
 
 const LeftButtonCont = styled.div`
   height: 100%;
   width: 100%;
-  padding-left: 10em;
   display: grid;
   justify-items: center;
-  align-items: center;
-`
-
-const RightButtonCont = styled.div`
-  padding-right: 10em;
-  height: 100%;
-  width: 100%;
-  display: grid;
-  font-family: Josefin Sans, sans-serif;
-  justify-content:center;
   align-items: center;
 `
 
@@ -177,7 +167,7 @@ const Button = styled.button`
   transition: .5s;
   font-size: 16px;
   &&:hover {
-    border: 1px solid #ccc;
+    border: 1px solid green;
   }
 `
 
@@ -248,28 +238,32 @@ const ImageIconCont = styled.div`
   align-content:center;
 `
 
-export default function ProductDetails({handleProductDelete, inputData, setInputData, handleProductUpdate, selectedProduct, productVisible, setProductVisible}) {
+const ImagePlaceholder = styled.div`
+  margin-top: 12em;
+`
+
+const PlaceholderText = styled.p`
+  color:black; 
+  display: grid;
+  align-content:center;
+  margin-top: 1em;
+  font-size: 18px;
+`
+
+
+
+const DropCont = styled.div`
+  
+`
+
+export default function ProductDetails({handleProductAdd, selectedCategory, setSelectedCategory, newProdData, setNewProdData, newProdVis, setNewProdVis}) {
   const [images, setImages] = React.useState([])
   const [image, setImage] = React.useState([])
-
-  console.log(selectedProduct)
-  
-  useEffect(() =>{
-    setImage(selectedProduct.image)
-  }, [selectedProduct])
-
-  function handleChange(e){
-    const name = e.target.name
-    const value = e.target.value
-    setInputData({
-      ...inputData,
-      [name]: value
-    })
-  }
+  const [imageExists, setImageExists] = useState(false)
 
   function handleSubmit() {
-    handleProductUpdate(image)
-    setInputData({
+    handleProductAdd(image)
+    setNewProdData({
       name: "",
       description: "",
       price: "",
@@ -278,24 +272,30 @@ export default function ProductDetails({handleProductDelete, inputData, setInput
 
   const onChange = (imageList) => {
     setImage(imageList[0].data_url)
+    setImageExists(true)
   }
 
-  function handleDelete() {
-    const id = selectedProduct.id
-    handleProductDelete(id)
+  function handleChange(e){
+    const name = e.target.name
+    const value = e.target.value
+    setNewProdData({
+      ...newProdData,
+      [name]: value
+    })
   }
 
 
 return (
   <section>
-    <Modal visible={productVisible} width="1200" height="600" effect="fadeInUp" onClickAway={() => {
-      setProductVisible(!productVisible)
-      setImage("https://i.ibb.co/mTFFpMB/logo3.png")
-      setInputData({
+    <Modal visible={newProdVis} width="1200" height="600" effect="fadeInUp" onClickAway={() => {
+      setNewProdVis(!newProdVis)
+      setImageExists(false)
+      setNewProdData({
         name: "",
-        description: "",
+        description: "Enter Description",
         price: "",
       })
+      setSelectedCategory("Enter Category")
       }}>
       {/* <CloseCont><AiOutlineClose color="black"/></CloseCont> */}
       <ProductDetailsCont>
@@ -304,9 +304,18 @@ return (
             <Header>Image</Header>
           </ImageHeader>
         <DisplayCont>
-          <ImageCont>
-            <ProductImage name="image" src={image}/>
-          </ImageCont>
+            {imageExists
+              ? (
+                <ImageCont>
+                  <ProductImage name="image" src={image}/>
+                </ImageCont>
+              ) : (
+                <ImagePlaceholder>
+                  <BsFillImageFill color={'5a5a5a'} size={40}/>
+                  <PlaceholderText>Please Add Image</PlaceholderText>
+                </ImagePlaceholder>
+              ) 
+            }
         </DisplayCont>
           <LeftBottomCont>
             <NewImageCont>
@@ -356,19 +365,24 @@ return (
                 <OptionCont>Price:</OptionCont>
               </DetailOptions>
               <DetailOptions>
+                <OptionCont>Category:</OptionCont>
+              </DetailOptions>
+              <DetailOptions>
                 <OptionCont>Description:</OptionCont>
               </DetailOptions>
             </DetailOptionsWrapper>
             <InputCont>
-              <Input name="name" onChange={handleChange} placeholder={selectedProduct.name} value={inputData.name}/>
-              <Input name="price" onChange={handleChange} placeholder={selectedProduct.price} value={inputData.price}/>
-              <Description value={inputData.description} name="description" onChange={handleChange} placeholder={selectedProduct.description}>
+              <Input value={newProdData.name} name="name" onChange={handleChange} placeholder="Enter Name" />
+              <Input value={newProdData.price} name="price" onChange={handleChange} placeholder="Enter Price" />
+              <DropCont>
+                <Menu selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory}/>
+              </DropCont>
+              <Description value={newProdData.description} name="description" onChange={handleChange} placeholder="Enter Description" >
               </Description>
             </InputCont>
           </DetailsDisplayCont>
           <RightBottomCont>
-            <LeftButtonCont><Button onClick={handleSubmit}>Update</Button></LeftButtonCont>
-            <RightButtonCont><DeleteButton onClick={handleDelete} >Delete</DeleteButton></RightButtonCont>
+            <LeftButtonCont><Button onClick={handleSubmit}>Add</Button></LeftButtonCont>
           </RightBottomCont>
         </RightCont>
       </ProductDetailsCont>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from 'react-awesome-modal';
 import styled from "styled-components"
 import { VscAdd } from "react-icons/vsc"
@@ -82,6 +82,9 @@ const StarCont = styled.div`
 `
 
 const ReviewText = styled.p`
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  word-break: break-word;
   height:4em;
   wdith: 30em;
   text-align: center;
@@ -100,22 +103,22 @@ const ReviewText = styled.p`
 
 `
 
-export default function AddReview({reviewVisible, setReviewVisible}) {
+export default function ReviewDetails({handleReviewDelete, selectedReview, reviewVisible, setReviewVisible}) {
 
-  // function constructor(props) {
-  //     super(props);
-  //     this.state = {
-  //         visible : false
-  //     }
-  // }
-  // value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+  const [user, setUser] = useState([])
 
-  function updateEvent() {
+  useEffect(() => {
+    fetch(`/users/${selectedReview.user_id}`)
+    .then((r) => r.json())
+    .then((data) => setUser(data))
+  }, [selectedReview])
 
+  
+
+  function handleDelete() {
+    const id = selectedReview.id
+    handleReviewDelete(id)
     setReviewVisible(!reviewVisible)
-  }
-
-  function deleteEvent() {
   }
   
     return (
@@ -123,15 +126,15 @@ export default function AddReview({reviewVisible, setReviewVisible}) {
         <Modal visible={reviewVisible} width="600" height="500" effect="fadeInUp" onClickAway={() => setReviewVisible(!reviewVisible)}>
           <NewReviewCont>
             <Header>Starry Night</Header>
-            <Image src="https://i.ibb.co/chqvqG3/starry-night.png"/>
+            <Image src={"https://i.ibb.co/chqvqG3/starry-night.png"}/>
             <InnerReviewCont>
-              <User>Username</User>
+              <User>{`${user.first} ${user.last}`}</User>
               <ReviewCont>
                 <InputCont>
                   <StarCont>
                   <StarRatings
-                    rating={4}
-                    starRatedColor="#000"
+                    rating={selectedReview.rating}
+                    starRatedColor="#FFD700"
                     numberOfStars={5}
                     starEmptyColor="#ccc"
                     name='rating'
@@ -139,11 +142,9 @@ export default function AddReview({reviewVisible, setReviewVisible}) {
                     starSpacing="5px"
                     />
                   </StarCont>
-                  <ReviewText placeholder='Enter Review'>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                  </ReviewText>
+                  <ReviewText placeholder='Enter Review'>{selectedReview.text}</ReviewText>
                   <ButtonCont>
-                    <DeleteButton onClick={updateEvent}>Delete</DeleteButton>
+                    <DeleteButton onClick={handleDelete}>Delete</DeleteButton>
                   </ButtonCont>
                 </InputCont>
               </ReviewCont>

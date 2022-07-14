@@ -282,13 +282,13 @@ export default function OrderDetails({handleOrderDelete, handleStatusChange, sel
 
     const orderColumn = [
       {
-        title: "Name"
+        title: "Name:"
       },
       {
-        title: "Email"
+        title: "Email:"
       },
       {
-        title: "Address"
+        title: "Address:"
       },
     ]
     

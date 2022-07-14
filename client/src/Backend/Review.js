@@ -60,6 +60,7 @@ const ReviewCont = styled.div`
   display: grid;
   justify-items:start;
   padding: .5em;
+  width: 100%;
 `
 
 const StarCont = styled.div`
@@ -69,33 +70,42 @@ const StarCont = styled.div`
 const ReviewText = styled.p`
   color: black;
   text-align: left;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  word-break: break-word;
 `
 
-function ProductReview({reviewVisible, setReviewVisible}) {
+function ProductReview({hanleReviewClick, review, reviewVisible, setReviewVisible}) {
+
+  function handleClick() {
+    const id = review.id
+    setReviewVisible(!reviewVisible)
+    hanleReviewClick(id)
+  }
+
   return (
-    <ProductReviewCont onClick={() => setReviewVisible(!reviewVisible)}>
+    <ProductReviewCont onClick={handleClick}>
       <HeaderCont>
         <LeftCont>
-          <User></User>
+          <User>{`${review.user.first} ${review.user.last}`}</User>
           <LocationCont>
             <ImLocation2 size={12}/>
-            <Location></Location>
+            <Location>{`${review.user.city}, ${review.user.state}`}</Location>
           </LocationCont>
         </LeftCont>
         <ReviewCont>
           <StarCont>
             <StarRatings
-              rating={4}
-              starRatedColor="#000"
+              rating={review.rating}
+              starRatedColor="#FFD700"
               numberOfStars={5}
               starEmptyColor="#ccc"
               name='rating'
-              starDimension="15px"
+              starDimension="13px"
               starSpacing="5px"
             />
           </StarCont> 
-            <ReviewText>
-            </ReviewText>
+            <ReviewText>{review.text}</ReviewText>
           </ReviewCont>
        </HeaderCont>
     </ProductReviewCont>
