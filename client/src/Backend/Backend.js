@@ -22,7 +22,7 @@ const BackendCont = styled.div`
   `
 
 
-function Backend({products, whiteNav}) {
+function Backend({setUser, products, whiteNav}) {
   const [selectedItem, setSelectedItem] = useState("Orders")
 
   function handleOpenMenu(){
@@ -30,10 +30,10 @@ function Backend({products, whiteNav}) {
   }
     return (
     <>
-      <BackNav />
+      <BackNav setUser ={setUser}/>
       <BackendCont>
         <InnerCont>
-          <LeftMenu setSelectedItem={setSelectedItem} handleOpenMenu={handleOpenMenu}/>
+          <LeftMenu selectedItem={selectedItem} setSelectedItem={setSelectedItem} handleOpenMenu={handleOpenMenu}/>
           <DisplayArea selectedItem={selectedItem} />
         </InnerCont>
       </BackendCont>

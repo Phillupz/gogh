@@ -1,5 +1,6 @@
-import {React, useState }from 'react'
+import {React, useEffect, useState }from 'react'
 import styled from 'styled-components'
+import {AiOutlineDelete} from 'react-icons/ai'
 
 const CartItemCont = styled.div`
   height: 5em;
@@ -53,12 +54,18 @@ const QtyButton = styled.button`
   border: none;
   width: 2em;
   color:black;
+  border: 1px solid transparent;
+  transition: .5s;
+  &&:hover {
+    border: 1px solid #ccc
+  }
 `
 
 const PlcHoldButton = styled.button`
   background-color: white;
   border: none;
   width: 2em;
+  padding-top: 2px;
 `
 
 const QtyTextCont = styled.div`
@@ -66,41 +73,54 @@ const QtyTextCont = styled.div`
  font-size:16px;
 `
 
-function CartItem({item}) {
+function CartItem({handleAdd, handleSubtract, handleItemDelete, item}) {
   const [qty, setQty] = useState(1)
   const [visible, setVisible] = useState(true)
+  const [product, setProduct] = useState([])
 
-  function handleSubtract() {
-    if (qty >= 2) {
-      return setQty(qty - 1)
+
+  useEffect(() => {
+    fetch(`/products/${item.product_id}`)
+    .then((r) => r.json())
+    .then((data) => setProduct(data))
+  }, [])
+
+  function onSubtract() {
+    if (item.quantity >= 2) {
+      return handleSubtract(item)
     } else {
       setVisible(!visible)
     }
   }
 
-  function handleAdd() {
-    if (qty === 1) {
-      return setQty(qty + 1), setVisible(true)
+  function onAdd() {
+    if (item.quantity === 1) {
+      handleAdd(item)
+      setVisible(true)
     } else {
-      return setQty(qty + 1)
+      return handleAdd(item)
     }
+  }
+
+  function onDelete() {
+    handleItemDelete(item)
   }
 
   return (
     <CartItemCont> 
-      <Image src={item.image}/>
+      <Image src={item.product.image}/>
       <InfoCont>
-        <ProductName>{item.name}</ProductName>
-        <ProductPrice>{`$${item.price}`}</ProductPrice>
+        <ProductName>{item.product.name}</ProductName>
+        <ProductPrice>{`$${item.product.price}`}</ProductPrice>
         <QtyCont>
           {visible 
-            ? (<QtyButton onClick={handleSubtract}>-</QtyButton>)
-            : (<PlcHoldButton></PlcHoldButton>)
+            ? (<QtyButton onClick={onSubtract}>-</QtyButton>)
+            : (<PlcHoldButton onClick={onDelete}><AiOutlineDelete/></PlcHoldButton>)
           }
-          <QtyTextCont>{qty}</QtyTextCont>
-          <QtyButton onClick={handleAdd}>+</QtyButton>
+          <QtyTextCont>{item.quantity}</QtyTextCont>
+          <QtyButton onClick={onAdd}>+</QtyButton>
         </QtyCont>
-        <Total>{`$${item.price * qty}`}</Total>
+        <Total>{`$${item.product.price * item.quantity}`}</Total>
       </InfoCont>
     </CartItemCont>
   )

@@ -1,18 +1,20 @@
-import { React } from 'react'
+import { React, useEffect } from 'react'
 import styled from 'styled-components'
 import CheckoutButton from './CheckoutButton.js'
 import CartItem from '../Navigation/CartItem.js'
 import Nav from '../Navigation/Nav.js'
+import { useSelector, useDispatch } from "react-redux";
 
 const CartWrapper = styled.div`
   display: grid;
   position: absolute;
   grid-template-rows: 10% 90%;
-  padding: 3em;
-  margin-top: 2em;
+  padding-left: 2em;
+  padding-right: 2em;
+  margin-top: 3em;
   width: 100%;
-  height: 650px;
-  border-bottom: 1px solid #eee
+  height: 625px;
+  border-bottom: 1px solid #eee;
 `
 
 const CartHeader = styled.div`
@@ -39,32 +41,41 @@ const CartCont = styled.div`
 `
 
 const InnerCartCont = styled.div`
-  grid-template-rows: 94% 6%;
+  grid-template-rows: 86% 8%;
   height: 100%;
   width: 100%;
   display: grid;
+  
 `
 
 const CartItemCont = styled.div`
   height: 100%;
+  max-height: 28em;
+  margin-bottom: 1em;
   width: 100%;
   display: grid;
   grid-auto-rows: 95px;
   margin-top: 1em;
+  overflow-x: hidden;
+  overflow-y: scroll; 
+  scroll-behavior: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  
 `
 
 const CartImageCont = styled.div`
   overflow-y: hidden;
   overflow-x: hidden;
   overscroll-behavior: none;
-  height: 109.8%;
-  baclground-color:blue; 
-  margin-right: 2em;
+  border: 1px solid black;
 `
 
 const CartImage = styled.img`
-  height: 601px;
-  width: 739px;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
 `
 
 const TotalCont = styled.div`
@@ -79,11 +90,13 @@ const TotalCont = styled.div`
 const OrderTotalCont = styled.div`
   border-right: 1px solid #eee;
   display: grid;
+  height: 4em;
   align-items:center;
   justify-content:center;
 `
 const OrderTotalText = styled.p`
   font-size: 24px;
+  margin-top: .75em;
   color: black;
   width:100%;
 `
@@ -114,69 +127,69 @@ const CheckoutLink = styled.a`
   }
 `
 
-function Checkout({whiteNav, handleToken}) {
-  const mock = [
-    {
-    name: "The Mulberry Tree",
-    description: "Lorem Ipsum",
-    image: "https://i.ibb.co/D45XZ8r/the-mulberry-tree.png",
-    category: "T-Shirt",
-    price: 40,
-    },
-    {
-    name: "Sunflowers",
-    description: "Lorem Ipsum",
-    image: "https://i.ibb.co/0QtkK3m/sunflowers.png",
-    category: "T-Shirt",
-    price: 40,
-    },
-    {
-    name: "Poppies",
-    description: "Lorem Ipsum",
-    image: "https://i.ibb.co/CH6Z23F/poppies.png",
-    category: "T-Shirt",
-    price: 40,
-    },
-    {
-    name: "Irises",
-    description: "Lorem Ipsum",
-    image: "https://i.ibb.co/GdYdyP7/irises.png",
-    category: "T-Shirt",
-    price: 40,
-    }
-  ]
+const SuccessCont = styled.div`
+  display: grid;
+  text-align: center;
+  align-content:center;
+  width: 100%;
+`
 
-  console.log(mock)
+const SuccessText = styled.p`
+  color: black;
+  font-size: 20px;
+`
 
-  const cartComponents = mock.map((item) => {
-    return <CartItem item={item}/>
+function Checkout({paymentSuccess, setWhiteNav, setCategory, handleAdd, handleSubtract, subTotal, setSubTotal, handleItemDelete, cart, whiteNav, handleToken}) {
+  const user = useSelector((state) => state.user.value)
+
+  useEffect(() => {
+    setWhiteNav(false)
   })
+
+  const cartComponents = (() => {
+    const cartCheck = cart.map((item) => {
+      return item
+    }) 
+      if (cartCheck.length > 0) {
+      return cart.map((item) => {
+        return <CartItem handleItemDelete={handleItemDelete} handleSubtract={handleSubtract} setSubTotal={setSubTotal} subTotal={subTotal} handleAdd={handleAdd} item={item}/>
+      })
+    } 
+  })()
 
   return (
     <>
-    <Nav whiteNav={whiteNav}/>
+    <Nav setCategory={setCategory} whiteNav={whiteNav}/>
     <CartWrapper>
       <CartHeader>
-        <GreetingCont>
-          Hey Phil!
-        </GreetingCont>
+        <GreetingCont>{`Hey, ${user.first}`}</GreetingCont>
       </CartHeader>
       <CartCont>
+        {paymentSuccess ?
+        (
+        <SuccessCont>
+          <SuccessText>Thank you for your order!</SuccessText>
+        </SuccessCont>
+        )
+        :
+        (
         <InnerCartCont>
           <CartItemCont>
             {cartComponents}
           </CartItemCont>
           <TotalCont>
             <OrderTotalCont>
-              <OrderTotalText>Subtotal: $180</OrderTotalText>
+              <OrderTotalText>{`Total: $${(subTotal * 1.0875).toFixed(2)}`}</OrderTotalText>
             </OrderTotalCont>
             <CheckoutButtonCont>
-              <CheckoutButton handleToken={handleToken}/>
+              <CheckoutButton subTotal={subTotal} cart={cart} handleToken={handleToken}/>
             </CheckoutButtonCont>
           </TotalCont>
         </InnerCartCont>
+        )
+        }
         <CartImageCont>
-          <CartImage src='https://i.ibb.co/rFSfp5N/Bowl-with-Peonies-and-Roses.jpg'/>
+          <CartImage src='https://i.ibb.co/V9kzvwW/gogh-horizontal.png'/>
         </CartImageCont>
       </CartCont>
     </CartWrapper>

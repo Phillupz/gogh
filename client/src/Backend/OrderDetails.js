@@ -194,6 +194,8 @@ const Button = styled.button`
   border: 1px solid #ccc;
   color:black;
   background-color:white;
+  font-family: Josefin Sans, sans-serif;
+  font-size: 16px;
   transition: .5s;
   &&:hover {
     border: 1px solid red;
@@ -225,29 +227,32 @@ export default function OrderDetails({handleOrderDelete, handleStatusChange, sel
   })
 
   useEffect(() => {
-      console.log(selectedOrder.status)
-      switch(selectedOrder.status) {
-        case "new":
-          return setStatus({
-            new: true,
-            shipped: false,
-            completed: false,
-          })
-        case "shipped":
-          return setStatus({
-            new: false,
-            shipped: true,
-            completed: false,
-          })
-        case "completed":
-          return setStatus({
-            new: false,
-            shipped: false,
-            completed: true,
-          })
-        default:
-          return 
-      }
+      fetch(`/orders/${selectedOrder.id}`)
+      .then((r) => r.json())
+      .then((data) => {
+        switch(data.status) {
+          case "new":
+            return setStatus({
+              new: true,
+              shipped: false,
+              completed: false,
+            })
+          case "shipped":
+            return setStatus({
+              new: false,
+              shipped: true,
+              completed: false,
+            })
+          case "completed":
+            return setStatus({
+              new: false,
+              shipped: false,
+              completed: true,
+            })
+          default:
+            return 
+        }
+      })
   }, [selectedOrder])
 
   useEffect(() => {

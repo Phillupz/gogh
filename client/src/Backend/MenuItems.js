@@ -1,22 +1,11 @@
 import {React, useState} from 'react'
 import styled from 'styled-components'
-import Dropdown from './Dropdown'
+import Dropdown from './Dropdown.js'
 import { GiHamburgerMenu } from "react-icons/gi"
-import "./Category.css"
+import "./Menu.css"
 
 const Button = styled.button`
-height: 2em;
-font-size: 16px;
-outline: none;
-border: 1px solid #eee;
-margin-top: 6px;
-width: 97%;
-font-family: Josefin Sans, sans-serif;
-padding-left:8px;
-transition: .5s;
-&&:hover {
-  border: 1px solid #ccc;
-}
+
 `
 
 function MenuItems({selectedCategory, setSelectedCategory}) {
@@ -52,7 +41,7 @@ function MenuItems({selectedCategory, setSelectedCategory}) {
 
     return (
      <li 
-       className="menu-items" 
+       className="menu-item" 
       
        onMouseEnter={onMouseEnter}
        onMouseLeave={onMouseLeave}
@@ -60,7 +49,7 @@ function MenuItems({selectedCategory, setSelectedCategory}) {
       {menuItem.submenu ? (
        <>
         <Button
-          type="button" 
+          className="backend-button"
           aria-haspopup="menu"
           aria-expanded={dropdown ? "true" : "false"}
           onClick={() => setDropdown((prev) => !prev)}>

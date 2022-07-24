@@ -206,17 +206,6 @@ function DisplayArea({selectedItem}) {
     setReviews(updatedReview)
   }
 
-  function handleProductDelete(id){
-    fetch(`/products/${selectedProduct.id}`,{
-      method: 'DELETE',
-    })
-    const updatedProducts = products.filter((product) => {
-      return product.id !== id 
-    })
-    setProductVisible(!productVisible)
-    setProducts(updatedProducts)
-  }
-
   useEffect(() => {
     fetch(`/${selectedItem.toLowerCase()}`)
     .then((r) => r.json())
@@ -267,11 +256,12 @@ function DisplayArea({selectedItem}) {
     setVisible(!visible)
   }
 
-  function handleProductClick(id){
+  function handleProductClick(id = selectedProduct.id){
     fetch(`/products/${id}`)
     .then((r) => r.json())
     .then((data) => setSelectedProduct(data))
    }
+   
 
    function handleProductUpdate(image) {
     setProductVisible(!productVisible)
@@ -302,7 +292,20 @@ function DisplayArea({selectedItem}) {
       })
     }
 
+    function handleProductDelete(id){
+      setSelectedProduct([])
+      fetch(`/products/${selectedProduct.id}`,{
+        method: 'DELETE',
+      })
+      const updatedProducts = products.filter((product) => {
+        return product.id !== id 
+      })
+      setProductVisible(!productVisible)
+      setProducts(updatedProducts)
+    }
+
     function handleProductAdd(image) {
+      setSelectedCategory("Enter Category")
       setNewProdVis(!newProdVis)
       const configObj = {
         name: newProdData.name, 
@@ -311,9 +314,6 @@ function DisplayArea({selectedItem}) {
         category: selectedCategory,
         image: image
       }
-      console.log(configObj)
-      const updatedProducts = [configObj, ...products]
-      setProducts(updatedProducts)
       fetch(`/products`, {
         method: "POST",
         headers: {
@@ -322,7 +322,10 @@ function DisplayArea({selectedItem}) {
           body: JSON.stringify(configObj)
         })
         .then((r) => r.json())
-        .then((data) => console.log(data))
+        .then((data) => {
+          const updatedProducts = [data, ...products]
+          setProducts(updatedProducts)
+        })
     }
 
   const orderComps = orders.map((order) => {

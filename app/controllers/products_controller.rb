@@ -1,5 +1,5 @@
 class ProductsController < ApplicationController
-  skip_before_action :authorize
+  rescue_from ActiveRecord::RecordNotFound, with: :not_found
 
   def index
     products = Product.all
@@ -7,7 +7,7 @@ class ProductsController < ApplicationController
   end
 
   def show
-    product = find_product
+    product = Product.find(params[:id])
     render json: product, status: :ok
   end
 
@@ -28,14 +28,31 @@ class ProductsController < ApplicationController
     head :no_content
   end
 
+  def rating 
+    if params[:product_id]
+      product = find_product
+      rating = (product.reviews.pluck(:rating).sum.to_f / product.reviews.pluck(:rating).size).to_f
+    else
+      rating = product.reviews
+    end 
+    render json: rating, status: :ok
+  rescue ZeroDivisionError
+    rating = 0.0
+    render json: rating
+  end
+
   private
 
+  def not_found
+    render json: [ error: "No Ratings Found"], status: :not_found
+  end
+
   def product_params
-    params.permit(:name, :description, :category, :image, :price)
+    params.permit(:name, :description_1, :description_2, :description_3, :piece_image, :category, :image, :price)
   end
 
   def find_product
-    product = Product.find(params[:id])
+    product = Product.find(params[:product_id])
   end 
 
 end

@@ -1,5 +1,5 @@
 import React from 'react'
-import "./Category.css"
+import "./Menu.css"
 import styled from 'styled-components'
 
 const MenuItem = styled.div`
@@ -21,10 +21,10 @@ function Dropdown({setSelectedCategory, dropdown, setDropdown, submenus }) {
   }
 
     return (
-     <ul className={`dropdown ${dropdown ? "show" : ""}`}>
+     <ul className={`drop ${dropdown ? "open" : ""}`}>
       {submenus.map((submenu, index) => (
-       <li id={submenu.title} onClick={handleClick} name="please"  key={index} className="menu-items">
-        <MenuItem>{submenu.title}</MenuItem>
+       <li id={submenu.title} onClick={handleClick} name="please"  key={index} className="menu-item">
+        <MenuItem className="sub">{submenu.title}</MenuItem>
        </li>
       ))}
      </ul>

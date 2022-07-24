@@ -1,17 +1,28 @@
 class CartItemsController < ApplicationController
-  
+
   def index
-    cart_items = CartItems.all 
+    if params[:user_id]
+      user = User.find(params[:user_id])
+      cart_items = user.cart_items
+    else
+      cart_items = CartItem.all 
+    end 
     render json: cart_items, status: :ok
   end
 
   def show
-    cart_item = find_cart_item
+    cart_item = CartItem.find(params[:id])
     render json: cart_item, status: :ok
   end
 
   def create
     cart_item = CartItem.create(cart_item_params)
+    render json: cart_item, status: :created
+  end
+
+  def update
+    cart_item = find_cart_item
+    cart_item.update(cart_item_params)
     render json: cart_item, status: :created
   end
 
@@ -23,7 +34,7 @@ class CartItemsController < ApplicationController
 
   private
 
-  def cart_items_params
+  def cart_item_params
     params.permit(:product_id, :user_id, :quantity)
   end
 

@@ -1,19 +1,19 @@
 import { ImgOverlay } from 'image-overlay-react'
 import 'image-overlay-react/dist/index.css'
 
-function MenuImage({menuItem}) {
+function MenuImage({submenu}) {
   return (
     <ImgOverlay
-      imgSrc={menuItem.image}
+      imgSrc={submenu.image}
       bgColor='black'
       position='right'
-      width="438.2px"
-      height="228.2px"
+      width="300px"
+      height="300px"
       fSize='48px'
       fColor='white'
       opacity= '1'
     >
-      {menuItem.title}
+      {submenu.title}
     </ImgOverlay>
   )
 }

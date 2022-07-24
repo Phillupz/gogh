@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import StarRatings from 'react-star-ratings'
 
@@ -57,33 +57,39 @@ const ButtonCont = styled.div`
   height: 30%;
   width: 60%;
   display: grid;
-  grid-template-columns: 50% 50%;
   justify-items:center;
 `
 
 const Button = styled.button`
   height: 100%;
-  width: 50%;
-  border: 1px solid black;
+  width: 25%;
+  border: 1px solid transparent;
+  font-family: Josefin Sans, sans-serif;
   color:black;
   background-color:white;
+  transition: .5s;
+  &&:hover {
+    border: 1px solid #ccc;
+  }
 `
 
-function ProductDisplay(){
+function ProductDisplay({handleAddToCart, rating, selectedProduct}){
+
+  function onAdd() {
+    handleAddToCart()
+  }
 
   return (
     <ProductWrapper>
       <ProductCont>
         <ProductImageCont>
-          <ProductImage src="https://i.ibb.co/chqvqG3/starry-night.png"/>
+          <ProductImage src={selectedProduct.image}/>
         </ProductImageCont>
         <ProductDescCont>
-          <Name>Starry Night</Name>
-          <ProductDescription>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-          </ProductDescription>
+          <Name>{selectedProduct.name}</Name>
+          <ProductDescription>{selectedProduct.description_1}</ProductDescription>
             <StarRatings
-                  rating={4.65}
+                  rating={rating}
                   starRatedColor="#000"
                   numberOfStars={5}
                   starEmptyColor="#ccc"
@@ -93,8 +99,7 @@ function ProductDisplay(){
                   isAggregateRating={true}
             />
           <ButtonCont>
-            <Button>Buy Now</Button>
-            <Button>Add To Cart</Button>
+            <Button onClick={onAdd} >Add To Cart</Button>
           </ButtonCont>
         </ProductDescCont>
       </ProductCont>

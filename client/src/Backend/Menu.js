@@ -1,7 +1,7 @@
 import React from 'react'
 import MenuItems from './MenuItems.js'
 import menuItem from './MenuItems'
-import "./Category.css"
+// import "./Category.css"
 
 function Menu({selectedCategory, setSelectedCategory}) {
 

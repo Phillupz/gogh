@@ -34,36 +34,44 @@ const PieceDescCont = styled.div`
   height: 100%;
   width: 100%;
 `
+const InnerDescCont = styled.div`
+  display:grid;
+  justify-items: center;
+  align-items:center;
+  height: 55%;
+  width: 100%;
+`
 
 const PieceDescription = styled.p`
-  height: 50%;
+  height: 100%;
   width: 80%;
-  display:grid;
-  align-items:center;
   color:black;
   font-size: 18px;
+  margin-top: 1em;
 `
 
 const PieceHeader = styled.p`
   color:black;
   font-size: 24px;
   width:100%;
+  margin-bottom: 1em;
 `
 
-function ProductPiece() {
+function ProductPiece({selectedProduct}) {
   return (
     <>
     <PieceHeader>The Piece</PieceHeader>
     <PieceCont>
       <PieceImageCont>
         <InnerPieceImageCont>
-          <PieceImage src="https://i.ibb.co/Z2Kjv75/starry-night.png"/>
+          <PieceImage src={selectedProduct.piece_image}/>
         </InnerPieceImageCont>
       </PieceImageCont>
       <PieceDescCont>
-        <PieceDescription>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-        </PieceDescription>
+        <InnerDescCont>
+          <PieceDescription>{selectedProduct.description_2}</PieceDescription>
+          <PieceDescription>{selectedProduct.description_3}</PieceDescription>
+        </InnerDescCont>
       </PieceDescCont>
     </PieceCont>
     </>

@@ -1,5 +1,4 @@
 class OrdersController < ApplicationController
-  skip_before_action :authorize
   
   def index
     orders = Order.all
@@ -19,6 +18,8 @@ class OrdersController < ApplicationController
 
   def create 
     order = Order.create!(order_params)
+    message = OrderMailer.with(email: order.user.email).thank_you_email
+    message.deliver_now
     render json: order, status: :created
   end
 

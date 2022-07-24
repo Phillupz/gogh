@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import AddReview from './AddReview.js'
 import StarRatings from 'react-star-ratings'
 
+
 const ProductReviewCont = styled.div`
   padding: 3px;
   height: 4em;
@@ -72,7 +73,7 @@ const TotalReviews = styled.p`
   font-size: 18px;
 `
 
-function ReviewBar() {
+function ReviewBar({rating, selectedProduct}) {
 
   return (
     <ProductReviewCont>
@@ -82,11 +83,11 @@ function ReviewBar() {
             <AddReview />
           </LeftCont>
           <ReviewInfoCont>
-            <Average>{4.65}</Average>
+            <Average>{selectedProduct.reviews.length}</Average>
             <TotalCont>
               <StarCont>
               <StarRatings
-                rating={4.65}
+                rating={rating}
                 starRatedColor="#000"
                 numberOfStars={5}
                 starEmptyColor="#ccc"
@@ -96,7 +97,7 @@ function ReviewBar() {
                 isAggregateRating={true}
               />
               </StarCont>
-              <TotalReviews>{`Total Reviews: ${4}`}</TotalReviews>
+              <TotalReviews>{`Total Reviews: ${selectedProduct.reviews.length}`}</TotalReviews>
             </TotalCont>
           </ReviewInfoCont>
         </HeaderCont>

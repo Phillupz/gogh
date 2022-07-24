@@ -1,5 +1,4 @@
 class OrderItemsController < ApplicationController
-  skip_before_action :authorize
   
   def index
     if params[:order_id]
@@ -17,7 +16,7 @@ class OrderItemsController < ApplicationController
   end
 
   def create
-    order_item = OrderItem.create(:order_id, :product_id)
+    order_item = OrderItem.create(order_item_params)
     render json: order_item, status: :created
   end
 
@@ -28,6 +27,10 @@ class OrderItemsController < ApplicationController
   end
 
   private
+
+  def order_item_params
+    params.permit(:order_id, :product_id, :quantity)
+  end
 
   def find_order
     Order.find(params[:order_id])

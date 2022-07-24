@@ -268,6 +268,7 @@ export default function ProductDetails({handleProductAdd, selectedCategory, setS
       description: "",
       price: "",
     })
+    setImageExists(false)
   }
 
   const onChange = (imageList) => {
@@ -289,13 +290,13 @@ return (
   <section>
     <Modal visible={newProdVis} width="1200" height="600" effect="fadeInUp" onClickAway={() => {
       setNewProdVis(!newProdVis)
+      setSelectedCategory("Enter Category")
       setImageExists(false)
       setNewProdData({
         name: "",
-        description: "Enter Description",
+        description: "",
         price: "",
       })
-      setSelectedCategory("Enter Category")
       }}>
       {/* <CloseCont><AiOutlineClose color="black"/></CloseCont> */}
       <ProductDetailsCont>

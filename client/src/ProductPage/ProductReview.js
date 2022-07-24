@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { ImLocation2 } from 'react-icons/im'
 import StarRatings from 'react-star-ratings'
@@ -66,21 +66,45 @@ const ReviewText = styled.p`
   text-align: left;
 `
 
-function ProductReview() {
+function ProductReview({review}) {
+  const [userReview, setUserReview] = useState({
+    id: "",
+    rating: "",
+    text: "",
+    product_id: "",
+    product: "",
+    user: "",
+  })
+
+  useEffect(() => {
+    fetch(`/reviews/${review.id}`)
+    .then((r) => r.json())
+    .then((data) => setUserReview({
+      ...userReview, 
+      id: data.id,
+      rating: data.rating,
+      text: data.text,
+      product_id: data.product_id,
+      product: data.product,
+      user: data.user,
+    }))
+  }, [])
+
+  
   return (
     <ProductReviewCont>
       <HeaderCont>
         <LeftCont>
-          <User>Phil Zukowksi</User>
+          <User>{`${userReview.user.first} ${userReview.user.last}`}</User>
           <LocationCont>
             <ImLocation2 size={12}/>
-            <Location>New York</Location>
+            <Location>{userReview.user.state}</Location>
           </LocationCont>
         </LeftCont>
         <ReviewCont>
           <StarCont>
             <StarRatings
-              rating={4}
+              rating={review.rating}
               starRatedColor="#000"
               numberOfStars={5}
               starEmptyColor="#ccc"
@@ -89,9 +113,7 @@ function ProductReview() {
               starSpacing="5px"
             />
           </StarCont> 
-            <ReviewText>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-            </ReviewText>
+            <ReviewText>{review.text}</ReviewText>
           </ReviewCont>
        </HeaderCont>
     </ProductReviewCont>

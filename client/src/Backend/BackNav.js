@@ -1,5 +1,6 @@
 import React from "react"
 import styled from 'styled-components'
+import { useHistory } from 'react-router-dom'
 import { AiOutlineLogout } from "react-icons/ai"
 
 const NavContainer = styled.div`
@@ -85,15 +86,16 @@ const CartCont =styled.div`
 `
 
 function BackNav({whiteNav, onLogout, setIsAuthenticated, setUser}) {
+  const history = useHistory()
 
   function handleLogout() {
+    console.log("bange")
     fetch('/logout',{
       method:'DELETE'
   })
     .then(()=>{
-        setIsAuthenticated(false)
         setUser(null)
-        onLogout()
+        history.push('/shop')
     })
   }
 
@@ -114,7 +116,7 @@ function BackNav({whiteNav, onLogout, setIsAuthenticated, setUser}) {
         <RightMenuCont>
           <BurgerCont>
             <CartCont>
-               
+              <AiOutlineLogout color={"black"} onClick={handleLogout} size={22}/>
             </CartCont>
           </BurgerCont>
         </RightMenuCont>

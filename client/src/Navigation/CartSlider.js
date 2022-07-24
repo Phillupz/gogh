@@ -1,4 +1,5 @@
-import React, { Component, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react"
+import {useHistory} from "react-router-dom"
 import styled from 'styled-components'
 import SlidingPane from "react-sliding-pane";
 import "./Sliding.css";
@@ -6,6 +7,9 @@ import {BsCartDash} from 'react-icons/bs'
 import {AiOutlineRight} from 'react-icons/ai'
 import {AiOutlineClose} from 'react-icons/ai'
 import CartItem from './CartItem.js'
+import { useSelector } from "react-redux";
+import { MdOutlineLogout } from "react-icons/md"
+import { MdOutlineLogin } from "react-icons/md"
 
 const CartWrapper = styled.div`
   display: grid;
@@ -22,12 +26,12 @@ const CartHeader = styled.div`
   height: 100%;
   border-bottom: 1px solid #eee;
   display: grid;
-  grid-template-columns: 5% 95%;
+  grid-template-columns: 5% 90% 5%;
   align-items: center;
 `
 
 const ExitIconCont = styled. div`
-  
+  cursor: pointer;
 `
 
 const GreetingCont = styled.div`
@@ -36,11 +40,11 @@ const GreetingCont = styled.div`
 `
 
 const CartCont = styled.div`
-  grid-template-columns: 49% 49%;
+  grid-template-columns: 50% 50%;
   height: 100%;
   width: 100%;
   display: grid;
-  grid-gap: 2%;
+  grid-gap: %;
 `
 
 const InnerCartCont = styled.div`
@@ -48,14 +52,22 @@ const InnerCartCont = styled.div`
   height: 100%;
   width: 100%;
   display: grid;
+  border-bottom: 1px solid #eee;
 `
 
 const CartItemCont = styled.div`
   height: 100%;
+  max-height: 34em;
   width: 100%;
+  padding: 1em;
   display: grid;
   grid-auto-rows: 95px;
-  margin-top: 1em;
+  overflow-x: hidden;
+  overflow-y: scroll; 
+  scroll-behavior: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `
 
 const CartImageCont = styled.div`
@@ -67,7 +79,6 @@ const CartImageCont = styled.div`
 const CartImage = styled.img`
   height: 659.6129032258064px;
   width: 576px;
-
 `
 
 const TotalCont = styled.div`
@@ -105,6 +116,8 @@ const LinkCont = styled.div`
 
 const CheckoutLink = styled.a`
   width: 100%;
+  cursor: pointer;
+  border: 1px solid transparent;
   height: 1.75em;
   display: grid;
   align-items:center;
@@ -125,95 +138,134 @@ const IconCont = styled.div`
   height: 2em;
 `
 
-function CartSlider({whiteNav}) {
-  const [state, setState] = useState({
-    isPaneOpen: false,
-    isPaneOpenLeft: false,
-  });
+const LogoutCont = styled.div`
+  display:grid;
+  justify-content:center;
+`
 
-  const mock = [
-    {
-    name: "The Mulberry Tree",
-    description: "Lorem Ipsum",
-    image: "https://i.ibb.co/D45XZ8r/the-mulberry-tree.png",
-    category: "T-Shirt",
-    price: 40,
-    },
-    {
-    name: "Sunflowers",
-    description: "Lorem Ipsum",
-    image: "https://i.ibb.co/0QtkK3m/sunflowers.png",
-    category: "T-Shirt",
-    price: 40,
-    },
-    {
-    name: "Poppies",
-    description: "Lorem Ipsum",
-    image: "https://i.ibb.co/CH6Z23F/poppies.png",
-    category: "T-Shirt",
-    price: 40,
-    },
-    {
-    name: "Irises",
-    description: "Lorem Ipsum",
-    image: "https://i.ibb.co/GdYdyP7/irises.png",
-    category: "T-Shirt",
-    price: 40,
+const LoginCont = styled.div`
+  cursor: pointer;
+`
+
+function CartSlider({handleLogout, handleCheckout, subTotal, handleAdd, handleSubtract, cart, handleItemDelete, isPaneOpen, setIsPaneOpen, whiteNav}) {
+  const user = useSelector((state) => state.user.value)
+  const [headerText, setHeaderText] = useState("Login to see cart")
+  const [checkoutLogout, setCheckoutLogout] = useState(true)
+  const history = useHistory()
+
+  function onLogin(){
+    history.push('/welcome')
+  }
+
+  function onLogout() {
+    setCheckoutLogout(false)
+    handleLogout()
+    setHeaderText("Login to see cart")
+  }
+
+  function onCheckout(){
+    handleCheckout(subTotal)
+  }
+
+  useEffect(() => {
+    if (subTotal === 0) {
+      return setCheckoutLogout(false)
+    } else {
+      setCheckoutLogout(true)
     }
-  ]
+  }, [subTotal])
 
-  console.log(mock)
+    const userCartItems = (() => {
+      const cartCheck = cart.map((item) => {
+        return item
+      }) 
+        if (cartCheck.length > 0) {
+        const cartItems = cart.map((item) => {
+          return <CartItem handleSubtract={handleSubtract} handleAdd={handleAdd} handleItemDelete={handleItemDelete} item={item}/>
+        })
+        return cartItems
+      } else {
+        return <div></div>
+      }
+    })()
 
-  const cartComponents = mock.map((item) => {
-    return <CartItem item={item}/>
-  })
+    useEffect(() => {
+      if (user) {
+        setCheckoutLogout(true)
+      } else {
+        setCheckoutLogout(false)
+      }
+      const greeting = (() => {
+        if (user) {
+          return `Hey, ${user.first}!`
+        } else {
+          return "Login to see cart"
+        }
+      })()
+      setHeaderText(greeting)
+    }, [user])
 
   return (
     <div>
-      <Burger onClick={() => setState({ isPaneOpen: true })}>
+      <Burger onClick={() => setIsPaneOpen(!isPaneOpen)}>
         <BsCartDash color={whiteNav ? "white" : "black"} size={24}/>
       </Burger>
       <SlidingPane
         className="custom"
         hideHeader={true}
         overlayClassName="some-custom-overlay-class"
-        isOpen={state.isPaneOpen}
-        title="Hey, Phil!"
+        isOpen={isPaneOpen}
         onRequestClose={() => {
-          // triggered on "<" on left top click or on outside click
-          setState({ isPaneOpen: false });
+          setIsPaneOpen(false);
         }}
       >
         <CartWrapper>
           <CartHeader>
             <ExitIconCont>
-              <AiOutlineClose color={'black'} size={20}/>
+              <AiOutlineClose onClick={() => setIsPaneOpen(!isPaneOpen)} color={'black'} size={20}/>
             </ExitIconCont> 
-            <GreetingCont>
-              Hey Phil!
-            </GreetingCont>
+            <GreetingCont>{headerText}</GreetingCont>
+            <LogoutCont>
+              {checkoutLogout? 
+                (
+                  <LoginCont><MdOutlineLogout onClick={onLogout} size={20} color={'black'}/></LoginCont>
+                )
+                : 
+                (
+                  <LoginCont><MdOutlineLogin onClick={onLogin} size={20} color={'black'}/></LoginCont>
+                )
+              }
+            </LogoutCont>
           </CartHeader>
           <CartCont>
             <InnerCartCont>
               <CartItemCont>
-                {cartComponents}
+                {userCartItems}
               </CartItemCont>
               <TotalCont>
                 <OrderTotalCont>
-                  <OrderTotalText>Subtotal: $180</OrderTotalText>
+                  <OrderTotalText>Subtotal: ${subTotal}</OrderTotalText>
                 </OrderTotalCont>
-                <CheckoutButtonCont>
-                  <LinkCont>
-                    <CheckoutLink>Checkout</CheckoutLink>
-                  </LinkCont>
-                  <IconCont>
-                    <AiOutlineRight color={'black'}/>
-                  </IconCont>
-                </CheckoutButtonCont>
+                {checkoutLogout ? 
+                  (
+                    <CheckoutButtonCont>
+                      <LinkCont>
+                        <CheckoutLink onClick={onCheckout}>Checkout</CheckoutLink>
+                      </LinkCont>
+                      <IconCont>
+                        <AiOutlineRight color={'black'}/>
+                      </IconCont>
+                    </CheckoutButtonCont>
+                  )
+                  : 
+                  (
+                    <div></div>
+                  )
+                }
               </TotalCont>
             </InnerCartCont>
             <CartImageCont>
-              <CartImage src='https://i.ibb.co/f2L9NmM/Cypresses-With-Two-Female-Figures.jpg'/>
+              <CartImage src='https://i.ibb.co/WctPMhd/gogh-vertical.png'/>
             </CartImageCont>
           </CartCont>
         </CartWrapper>

@@ -26,11 +26,12 @@ const ItemContainer = styled.div`
   width: 96%;
   height: 40px;
   padding:1%;
+  border: ${props => props.class === "selected" ? "1px solid #ccc" : "1px solid transparent;"};
   cursor: pointer;
   transition: .5s;
-  background-color:  ${props => props.class === "selected" ? "#f5f5f5" : "background-color: #f5f5f5;"};
+
   &&:hover {
-    ${props => props.class === "selected" ? "background-color: none" : "background-color: #f5f5f5;"}
+    ${props => props.class === "selected" ? "background-color: none" : "background-color: #eee;"}
   }
 `
 
@@ -44,7 +45,9 @@ const MenuNameContainer = styled.p`
   color: black;
 `
 
-function LeftMenu({setSelectedItem, handleOpenMenu}) {
+function LeftMenu({selectedItem, setSelectedItem, handleOpenMenu}) {
+
+  console.log("sel", selectedItem)
 
   const menu = [
     {
@@ -65,7 +68,7 @@ function LeftMenu({setSelectedItem, handleOpenMenu}) {
     const id = menu.id
     const title = menu.title
     return (
-      <ItemContainer onClick={() => setSelectedItem(title)}>
+      <ItemContainer class={title === selectedItem ? "selected" : "default"}  onClick={() => setSelectedItem(title)}>
          <MenuNameContainer name={title}>{title}</MenuNameContainer>
       </ItemContainer>
     );

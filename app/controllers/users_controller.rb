@@ -1,14 +1,14 @@
 class UsersController < ApplicationController
   rescue_from ActiveRecord::RecordInvalid, with: :unprocessable  
-  skip_before_action :authorize
+  before_action :authorize_user, except: [:create, :show]
 
   def index 
     render json: User.all
   end
 
   def show
-    user = find_user
-    render json: user, status: :ok
+    user = User.find_by(id: session[:current_user])
+    render json: user
   end
  
   def create

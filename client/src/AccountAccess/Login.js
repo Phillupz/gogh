@@ -1,41 +1,40 @@
 import { React, useState } from "react"
-import { useHistory } from "react-router-dom"
+import { useHistory, useRouteMatch } from "react-router-dom"
 import styled from 'styled-components'
+import { login } from "../Redux/userSlice"
+import { useDispatch, useSelector } from "react-redux";
 
 const MainLoginCont = styled.div`
-  width: 70%;
-  height: 36em;
+  width: 70em;
+  height: 35em;
   display: grid;
-  grid-template-columns: 40% 60%;
+  align-content: center;
+  grid-template-columns: 50% 50%;
   margin-top: 4.5em;
   margin-left:auto;
   margin-right:auto;
   position: relative;
   border: 1.5px solid black;
-  border-radius: 7px;
 `
 
 const LoginCont = styled.div`
   height: 100%;
   width: 100%;
-  margin-left:auto;
-  margin-right:auto;
 `
 
 const CenterCont = styled.div`
   display:grid;
   position: relative;
-  margin-top: 20px;
+  margin-top: 3em;
 `
 
 const Image = styled.img`
-  margin-left:auto;
-  margin-right:auto;
-  padding: 10px;
-  position: relative;
-  height: 12em;
-  top: 10px;
-  margin-bottom: 10px;
+margin-left:auto;
+margin-right:auto;
+padding: 10px;
+height: 12em;
+top: 10px;
+
 `
 
 const LoginForm = styled.form`
@@ -45,36 +44,38 @@ const LoginForm = styled.form`
 `
 
 const LoginInput = styled.input`
-  border: 1.5px solid black;
-  border-radius: 10px;
-  height: 4vh;
-  outline: none;
-  padding-left: 3%;
-  width: 70%;
-  margin-left: auto;
-  margin-right: auto;
+border: 1.5px solid #ccc;
+font-family: Josefin Sans, sans-serif;
+font-size: 16px;
+height: 4.5vh;
+outline: none;
+padding-left: 2%;
+width: 70%;
+margin-left: auto;
+margin-right: auto;
+&&:hover {
+  background-color: #eee
+}
 `
 
 const Button = styled.button`
-  height: 30px;
-  width: 30%;
-  margin-left:auto;
-  margin-right:auto;
-  background-color:white;
-  border: 1px solid black;
-  border-radius: 10px;
-  transition: .3s;
-  &&:hover {
-    background-color: #ffff00
-  }
+height: 30px;
+width: 20%;
+margin-left:auto;
+margin-right:auto;
+background-color:white;
+font-family: Josefin Sans, sans-serif;
+border: 1px solid #ccc;
+transition: .3s;
+&&:hover {
+  background-color: #eee
+}
 `
 
 const LoginImage = styled.img`
-  margin-top: .05em;
-  height: 88.8%;
-  width: 100%;
-  border-top-right-radius: 7px;
-  border-bottom-right-radius: 7px;
+height: 35em;
+width: 35em;
+border: 1px solid black;
 `
 
 const ButtonCont = styled.div`
@@ -96,11 +97,14 @@ const ErrorLi = styled.li`
   font-size: 12px;
 `
 
-function Login({setIsAuthenticated, setShowLogin, setUser }) {
+function Login({setIsAuthenticated, setShowLogin }) {
   const history = useHistory()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [errors, setErrors] = useState([]);
+  const [errors, setErrors] = useState([])
+  const dispatch = useDispatch()
+  const user = useSelector((state) => state.user.value)
+  const match = useRouteMatch()
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -114,9 +118,9 @@ function Login({setIsAuthenticated, setShowLogin, setUser }) {
       if (r.ok) {
         r.json()
         .then((user) => {
-          setUser(user)
-          setIsAuthenticated(true)
-          history.push("/shop")
+          dispatch(login(user))
+          // setIsAuthenticated(true)
+          history.goBack()
         })
       } else {
         r.json().then((err) => setErrors(err.errors))
@@ -132,7 +136,7 @@ return (
   <MainLoginCont>
     <LoginCont>
       <CenterCont>
-        <Image src="https://i.ibb.co/RcLmfKX/logo2.png"/>
+        <Image src="https://i.ibb.co/4sQCvDG/logo2.png"/>
         <LoginForm onSubmit={handleSubmit}>
           <LoginInput 
             type="text"
@@ -156,7 +160,7 @@ return (
         <ErrorUl>{errorComponents}</ErrorUl>
       </CenterCont>
     </LoginCont>
-    <LoginImage src="https://i.ibb.co/yV3SjcW/header-image.jpg" />
+    <LoginImage src="https://i.ibb.co/wQyn7Lx/starry-night.png" />
   </MainLoginCont>
  )
 }
