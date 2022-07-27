@@ -159,13 +159,12 @@ const ImageIconCont = styled.div`
   width: 70px;
 `
 
-function DisplayArea({selectedItem}) {
+function DisplayArea({products, setProducts, selectedItem}) {
   const [visible, setVisible] = useState(false)
   const [productVisible, setProductVisible] = useState(false)
   const [newProdVis, setNewProdVis] = useState(false)
   const [reviewVisible, setReviewVisible] = useState(false)
   const [orders, setOrders] = useState([])
-  const [products, setProducts] = useState([])
   const [reviews, setReviews] = useState([])
   const [orderItems, setOrderItems] = useState([])
   const [selectedOrder, setSelectedOrder] = useState([])
@@ -179,16 +178,72 @@ function DisplayArea({selectedItem}) {
   })
   const [inputData, setInputData] = useState({
     name: "",
-    description: "",
+    description_1: "",
     price: "",
   })
   const [newProdData, setNewProdData] = useState({
     name: "",
-    description: "",
     price: "",
+    category: "",
+    description_1: "",
+    description_2: "",
+    description_3: "",
+  })
+  const [nameError, setNameError] = useState({
+    name: [],
+  })
+  const [priceError, setPriceError] = useState({
+    price: [],
+  })
+  const [categoryError, setCategoryError] = useState({
+    category: [],
+  })
+  const [description_1_Error, setDescription_1_Error] = useState({
+    description: [],
+  })
+  const [description_2_Error, setDescription_2_Error] = useState({
+    description: [],
+  })
+  const [description_3_Error, setDescription_3_Error] = useState({
+    description: [],
+  })
+  const [imageError, setImageError] = useState({
+    error: [],
+  })
+  const [imagePieceError, setImagePieceError] = useState({
+    error: [],
   })
 
-  console.log(selectedReview.user)
+
+  function removeFirstWord(str) {
+    const indexOfSpace = str.indexOf(' ');
+  
+    if (indexOfSpace === -1) {
+      return '';
+    }
+  
+    return str.substring(indexOfSpace + 1);
+  }
+
+  function removeFirstTwoWord(str) {
+    const indexOfSpace = str.indexOf(' ');
+  
+    if (indexOfSpace === -1) {
+      return '';
+    }
+  
+    return str.substring(indexOfSpace + 3);
+  }
+
+  function removeFirstThreeWord(str) {
+    const indexOfSpace = str.indexOf(' ');
+  
+    if (indexOfSpace === -1) {
+      return '';
+    }
+  
+    return str.substring(indexOfSpace + 6);
+  }
 
   function hanleReviewClick(id){
     fetch(`/reviews/${id}`)
@@ -242,7 +297,10 @@ function DisplayArea({selectedItem}) {
        })
      })
      .then((r) => r.json())
-     .then((data) => setSelectedOrder(data))
+     .then((data) => {
+      console.log(data)
+      setSelectedOrder(data)
+    })
   }
 
   function handleOrderDelete(id) {
@@ -261,15 +319,15 @@ function DisplayArea({selectedItem}) {
     .then((r) => r.json())
     .then((data) => setSelectedProduct(data))
    }
-   
+
+   console.log("selectedProduct", selectedProduct)
 
    function handleProductUpdate(image) {
     setProductVisible(!productVisible)
     const configObj = {
       ...selectedProduct,
-      id: selectedProduct.id,
       name: inputData.name ? inputData.name : selectedProduct.name,
-      description: inputData.description ? inputData.description : selectedProduct.description,
+      description_1: inputData.description_1 ? inputData.description_1 : selectedProduct.description_1,
       price: inputData.price ? inputData.price : selectedProduct.price,
       category: selectedProduct.category,
       image: image
@@ -282,13 +340,16 @@ function DisplayArea({selectedItem}) {
       }
     })
     setProducts(updatedProducts)
-    console.log("config", configObj)
     fetch(`/products/${selectedProduct.id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json"
      },
         body: JSON.stringify(configObj)
+      })
+      .then((r) => r.json())
+      .then((data) => {
+        console.log(data)
       })
     }
 
@@ -304,12 +365,16 @@ function DisplayArea({selectedItem}) {
       setProducts(updatedProducts)
     }
 
-    function handleProductAdd(image) {
-      setSelectedCategory("Enter Category")
-      setNewProdVis(!newProdVis)
+    console.log(nameError, priceError, categoryError, description_1_Error, description_2_Error, description_3_Error,)
+    console.log("see", selectedCategory)
+
+    function handleProductAdd(pieceImage, image) {
       const configObj = {
         name: newProdData.name, 
-        description: newProdData.description,
+        description_1: newProdData.description_1,
+        description_2: newProdData.description_2,
+        description_3: newProdData.description_3,
+        piece_image: pieceImage,
         price: newProdData.price,
         category: selectedCategory,
         image: image
@@ -320,11 +385,101 @@ function DisplayArea({selectedItem}) {
           "Content-Type": "application/json"
        },
           body: JSON.stringify(configObj)
-        })
-        .then((r) => r.json())
-        .then((data) => {
-          const updatedProducts = [data, ...products]
-          setProducts(updatedProducts)
+        }).then((r) => {
+          if (r.ok) {
+            r.json().then((data) => {
+              const updatedProducts = [data, ...products]
+              setProducts(updatedProducts)
+              setSelectedCategory("Enter Category")
+              setNewProdVis(!newProdVis)
+              setNameError({
+                ...nameError,
+                name: []
+              })
+              setPriceError({
+                ...priceError,
+                price: []
+              })
+              setCategoryError({
+                ...categoryError,
+                category: []
+              })
+              setDescription_1_Error({
+                ...description_1_Error,
+                description: []
+              })
+              setDescription_2_Error({
+                ...description_2_Error,
+                description: []
+              })
+              setDescription_3_Error({
+                ...description_3_Error,
+                description: []
+              })
+              setImageError({
+                ...imageError,
+                error: []
+              })
+              setImagePieceError({
+                ...imagePieceError,
+                error: []
+              })
+            })
+          } else {
+            r.json().then((err) => {
+              console.log("err", err.errors)
+              err.errors.map((error) => {
+                if (error.toLowerCase().includes('name')) {
+                  setNameError({
+                    ...nameError,
+                    name: removeFirstWord(error)
+                  })
+                }
+                if (error.toLowerCase().includes('price')) {
+                  setPriceError({
+                    ...priceError,
+                    price: removeFirstWord(error)
+                  })
+                }
+                if (error.toLowerCase().includes('category')) {
+                  setCategoryError({
+                    ...categoryError,
+                    category: removeFirstWord(error)
+                  })
+                }
+                if (error.toLowerCase().includes('description 1')) {
+                  setDescription_1_Error({
+                    ...description_1_Error,
+                    description: removeFirstTwoWord(error)
+                  })
+                }
+                if (error.toLowerCase().includes('description 2')) {
+                  setDescription_2_Error({
+                    ...description_2_Error,
+                    description: removeFirstTwoWord(error)
+                  })
+                }
+                if (error.toLowerCase().includes('description 3')) {
+                  setDescription_3_Error({
+                    ...description_3_Error,
+                    description: removeFirstTwoWord(error)
+                  })
+                }
+                if (error.toLowerCase().includes('image')) {
+                  setImageError({
+                    ...imageError,
+                    error: removeFirstWord(error)
+                  })
+                }
+                if (error.toLowerCase().includes('piece')) {
+                  setImagePieceError({
+                    ...imagePieceError,
+                    error: removeFirstThreeWord(error)
+                  })
+                }
+              })
+            })
+          }
         })
     }
 
@@ -381,7 +536,7 @@ function DisplayArea({selectedItem}) {
   return (
     <OrderCont>
       {displayedComp}
-      <NewProduct handleProductAdd={handleProductAdd} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} newProdData={newProdData} setNewProdData={setNewProdData} newProdVis={newProdVis} setNewProdVis={setNewProdVis}/>
+      <NewProduct setCategoryError={setCategoryError} imageError={imageError} imagePieceError={imagePieceError} nameError={nameError} priceError={priceError} categoryError={categoryError.category} description_1_Error={description_1_Error.description} description_2_Error={description_2_Error.description} description_3_Error={description_3_Error.description} handleProductAdd={handleProductAdd} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} newProdData={newProdData} setNewProdData={setNewProdData} newProdVis={newProdVis} setNewProdVis={setNewProdVis}/>
       <ProductDetails handleProductDelete={handleProductDelete} handleProductUpdate={handleProductUpdate} inputData={inputData} setInputData={setInputData} selectedProduct={selectedProduct} productVisible={productVisible} setProductVisible={setProductVisible}/>
       <OrderDetails handleOrderDelete={handleOrderDelete} status={status} handleStatusChange={handleStatusChange} orderItems={orderItems} selectedOrder={selectedOrder} visible={visible} setVisible={setVisible}/>
       <ReviewDetails handleReviewDelete={handleReviewDelete} selectedReview={selectedReview} reviewVisible={reviewVisible} setReviewVisible={setReviewVisible}/>

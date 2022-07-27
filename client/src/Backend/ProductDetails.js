@@ -119,23 +119,23 @@ const Input = styled.input`
 `
 
 const Description = styled.textarea`
-  padding:8px;
-  border: 1px solid #eee;
-  font-size: 16px;
-  outline: none;
-  margin-top: 6px;
-  font-family: Josefin Sans, sans-serif;
-  width: 97%;
-  resize:vertical;
-  min-height: 34px;
-  max-height: 400px;
-  transition: .3s;
-  &::-webkit-scrollbar {
-    display: none;
-  };
-  &&:hover {
-    border: 1px solid #ccc;
-  };
+padding:8px;
+border: 1px solid #eee;
+font-size: 16px;
+outline: none;
+margin-top: 8px;
+font-family: Josefin Sans, sans-serif;
+width: 97%;
+resize:vertical;
+min-height: 200px;
+max-height: 400px;
+transition: .3s;
+&::-webkit-scrollbar {
+  display: none;
+};
+&&:hover {
+  border: 1px solid #ccc;
+};
 `
 
 const RightBottomCont = styled.div`
@@ -189,7 +189,7 @@ const DeleteButton = styled.button`
   text-decoration: none;
   font-family: Josefin Sans, sans-serif;
   border: transparent;
-  transition: 1s;
+  transition: .5s;
   &&:hover {
     border: 1px solid red;
   }
@@ -271,7 +271,7 @@ export default function ProductDetails({handleProductDelete, inputData, setInput
     handleProductUpdate(image)
     setInputData({
       name: "",
-      description: "",
+      description_1: "",
       price: "",
     })
   }
@@ -293,7 +293,7 @@ return (
       setImage("https://i.ibb.co/mTFFpMB/logo3.png")
       setInputData({
         name: "",
-        description: "",
+        description_1: "",
         price: "",
       })
       }}>
@@ -362,7 +362,7 @@ return (
             <InputCont>
               <Input name="name" onChange={handleChange} placeholder={selectedProduct.name} value={inputData.name}/>
               <Input name="price" onChange={handleChange} placeholder={selectedProduct.price} value={inputData.price}/>
-              <Description value={inputData.description} name="description" onChange={handleChange} placeholder={selectedProduct.description}>
+              <Description value={inputData.description_1} name="description_1" onChange={handleChange} placeholder={selectedProduct.description_1}>
               </Description>
             </InputCont>
           </DetailsDisplayCont>

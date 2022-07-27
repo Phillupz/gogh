@@ -28,8 +28,8 @@ users = [
         password: "password1"
     },
     {
-        first: "Bev", 
-        last: "Davis", 
+        first: "Bev",
+        last: "Davis",
         street: "333 Sum Ware Cir",
         apt: "2",
         city: "Robbins",
@@ -451,6 +451,28 @@ end
 
 products.each do |item|
     Product.create(item)
+end
+
+  featured_products = [
+    {
+      product_id: 6
+    },
+    {
+      product_id: 14
+    },
+    {
+      product_id: 22
+    },
+    {
+      product_id: 30
+    },
+    {
+      product_id: 38
+    },
+  ]
+
+  featured_products.each do |item|
+    FeaturedProduct.create(item)
 end
 
 

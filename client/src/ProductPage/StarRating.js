@@ -4,16 +4,15 @@ import styled from 'styled-components'
 import './Star.css'
 
 
-function StarRating() {
-  const [rating, setrating] = useState(0)
+function StarRating({starRating, setStarRating}) {
   
   function changeRating(newRating) {
-    setrating(newRating)
+    setStarRating(newRating)
   }
 
   return (
     <StarRatings
-      rating={rating}
+      rating={starRating}
       numberOfStars={5}
       starRatedColor="black"
       starHoverColor="black"

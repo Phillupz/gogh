@@ -1,31 +1,35 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
+const initialStateValue = {
+  first: "", 
+  last: "", 
+  street: "",
+  apt: "",
+  city: "",
+  state: "",
+  country: "",
+  zip: "",
+  admin: false, 
+  email: "", 
+  password: ""
+}
+
 const userSlice = createSlice({
   name: "user",
-  initialState: {
-    first: "", 
-    last: "", 
-    street: "",
-    apt: "",
-    city: "",
-    state: "",
-    country: "",
-    zip: "",
-    admin: false, 
-    email: "", 
-    password: ""
-  },
+  initialState: { value: initialStateValue },
   reducers: {
     login: (state, action) => {
       state.value = action.payload
     },
-    logout: (state, initialState) => {
-      state.value = initialState
-    }
+    logout: (state) => {
+      state.value = initialStateValue
+    },
+    update: (state, action) => {
+      state.value = {...state, product_id: action.payload.product.id}
+    },
   },
-  
 });
 
-export const { login, logout } = userSlice.actions;
+export const { login, logout, update } = userSlice.actions;
 
 export default userSlice.reducer;

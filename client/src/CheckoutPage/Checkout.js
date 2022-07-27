@@ -151,10 +151,13 @@ function Checkout({paymentSuccess, setWhiteNav, setCategory, handleAdd, handleSu
       return item
     }) 
       if (cartCheck.length > 0) {
-      return cart.map((item) => {
-        return <CartItem handleItemDelete={handleItemDelete} handleSubtract={handleSubtract} setSubTotal={setSubTotal} subTotal={subTotal} handleAdd={handleAdd} item={item}/>
+      const cartItems = cart.map((item) => {
+        return <CartItem setSubTotal={setSubTotal} cart={cart} handleSubtract={handleSubtract} handleAdd={handleAdd} handleItemDelete={handleItemDelete} item={item}/>
       })
-    } 
+      return cartItems
+    } else {
+      return <div></div>
+    }
   })()
 
   return (

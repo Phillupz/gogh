@@ -8,6 +8,7 @@ import StarRating from './StarRating.js'
 const NewReviewCont = styled.div`
   height:100%;
   width: 100%;
+  background-color:white;
   display:grid;
   justify-items: center;
 `
@@ -47,12 +48,17 @@ const ButtonCont = styled.div`
 `
 
 const AddButton = styled.button`
-  border: none;
-  background-color: transparent;
-  border: 1px solid black;
-  border-radius: 7px;
-  height: 1.75em;
-  width: 5em;
+   height: 30px;
+  width: 75px;
+  font-size: 16px;
+  background-color:white;
+  text-decoration: none;
+  font-family: Josefin Sans, sans-serif;
+  border: transparent;
+  transition: 1s;
+  &&:hover {
+    border: 1px solid #ccc;
+  }
 `
 
 const ReviewCont = styled.div`
@@ -84,23 +90,21 @@ const Input = styled.textarea`
 
 `
 
-export default function AddReview({}) {
+export default function AddReview({handleAddReview, selectedProduct}) {
   const [visible, setVisible] = useState()
+  const [reviewText, setReviewText] = useState("")
+  const [starRating, setStarRating] = useState(0)
 
-  // function constructor(props) {
-  //     super(props);
-  //     this.state = {
-  //         visible : false
-  //     }
-  // }
-  // value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
 
-  function updateEvent() {
-
+  function onAddReview() {
+    setReviewText("")
+    setStarRating(0)
+    handleAddReview(selectedProduct, reviewText, starRating)
     setVisible(!visible)
   }
 
-  function deleteEvent() {
+  function onChange(e) {
+    setReviewText(e.target.value)
   }
   
     return (
@@ -113,11 +117,11 @@ export default function AddReview({}) {
               <ReviewCont>
                 <InputCont>
                   <StarCont>
-                    <StarRating />
+                    <StarRating starRating={starRating} setStarRating={setStarRating}/>
                   </StarCont>
-                  <Input placeholder='Enter Review'/>
+                  <Input onChange={onChange} value={reviewText} placeholder='Enter Review'/>
                   <ButtonCont>
-                    <AddButton onClick={updateEvent}>Review</AddButton>
+                    <AddButton onClick={onAddReview}>Review</AddButton>
                   </ButtonCont>
                 </InputCont>
               </ReviewCont>

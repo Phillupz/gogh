@@ -3,11 +3,11 @@ import MenuItems from './MenuItems.js'
 import menuItem from './MenuItems'
 // import "./Category.css"
 
-function Menu({selectedCategory, setSelectedCategory}) {
+function Menu({setCategoryError, categoryError, selectedCategory, setSelectedCategory}) {
 
  return (
   <nav>
-   <ul className="menus"><MenuItems selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} item={menuItem}/></ul>
+   <ul className="menus"><MenuItems setCategoryError={setCategoryError} categoryError={categoryError} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} item={menuItem}/></ul>
   </nav>
  );
 };

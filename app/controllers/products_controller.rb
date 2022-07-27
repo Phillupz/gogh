@@ -12,18 +12,20 @@ class ProductsController < ApplicationController
   end
 
   def create
-    product = Product.create(product_params)
+    product = Product.create!(product_params)
     render json: product, status: :created
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
   end
 
   def update
-    product = find_product
-    product.update(product_params)
+    product = Product.find(params[:id])
+    product.update!(product_params)
     render json: product, status: :ok 
   end
 
   def destroy
-    product = find_product
+    product = Product.find(params[:id])
     product.destroy
     head :no_content
   end

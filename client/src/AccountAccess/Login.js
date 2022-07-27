@@ -97,7 +97,7 @@ const ErrorLi = styled.li`
   font-size: 12px;
 `
 
-function Login({setIsAuthenticated, setShowLogin }) {
+function Login({setCheckoutLogout, setHeaderText, setIsAuthenticated, setShowLogin }) {
   const history = useHistory()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -119,7 +119,8 @@ function Login({setIsAuthenticated, setShowLogin }) {
         r.json()
         .then((user) => {
           dispatch(login(user))
-          // setIsAuthenticated(true)
+          setHeaderText(`Hey, ${user.first}!`)
+          setCheckoutLogout(true)
           history.goBack()
         })
       } else {

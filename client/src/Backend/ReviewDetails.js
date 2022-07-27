@@ -108,9 +108,9 @@ export default function ReviewDetails({handleReviewDelete, selectedReview, revie
   const [user, setUser] = useState([])
 
   useEffect(() => {
-    fetch(`/users/${selectedReview.user_id}`)
-    .then((r) => r.json())
-    .then((data) => setUser(data))
+    if (selectedReview) {
+      setUser(selectedReview.user)
+    }
   }, [selectedReview])
 
   

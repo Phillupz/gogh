@@ -13,11 +13,15 @@ const MenuItem = styled.div`
   }
 `
 
-function Dropdown({setSelectedCategory, dropdown, setDropdown, submenus }) {
+function Dropdown({setCategoryError, categoryError, setSelectedCategory, dropdown, setDropdown, submenus }) {
   
   function handleClick(e) {
     setSelectedCategory(e.currentTarget.id)
     setDropdown(!dropdown)
+    setCategoryError({
+      ...categoryError,
+      category: []
+    })
   }
 
     return (

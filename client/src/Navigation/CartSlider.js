@@ -74,11 +74,13 @@ const CartImageCont = styled.div`
   overflow-y: hidden;
   overflow-x: hidden;
   overscroll-behavior: none;
+  border: 1px solid black;
 `
 
 const CartImage = styled.img`
-  height: 659.6129032258064px;
-  width: 576px;
+  height: 619.6129032258064px;
+  width: 600px;
+  object-fit:cover;
 `
 
 const TotalCont = styled.div`
@@ -147,10 +149,9 @@ const LoginCont = styled.div`
   cursor: pointer;
 `
 
-function CartSlider({handleLogout, handleCheckout, subTotal, handleAdd, handleSubtract, cart, handleItemDelete, isPaneOpen, setIsPaneOpen, whiteNav}) {
+function CartSlider({setSubTotal, headerText, setHeaderText, checkoutLogout, setCheckoutLogout, handleLogout, handleCheckout, subTotal, handleAdd, handleSubtract, cart, handleItemDelete, isPaneOpen, setIsPaneOpen, whiteNav}) {
   const user = useSelector((state) => state.user.value)
-  const [headerText, setHeaderText] = useState("Login to see cart")
-  const [checkoutLogout, setCheckoutLogout] = useState(true)
+
   const history = useHistory()
 
   function onLogin(){
@@ -167,21 +168,13 @@ function CartSlider({handleLogout, handleCheckout, subTotal, handleAdd, handleSu
     handleCheckout(subTotal)
   }
 
-  useEffect(() => {
-    if (subTotal === 0) {
-      return setCheckoutLogout(false)
-    } else {
-      setCheckoutLogout(true)
-    }
-  }, [subTotal])
-
     const userCartItems = (() => {
       const cartCheck = cart.map((item) => {
         return item
       }) 
         if (cartCheck.length > 0) {
         const cartItems = cart.map((item) => {
-          return <CartItem handleSubtract={handleSubtract} handleAdd={handleAdd} handleItemDelete={handleItemDelete} item={item}/>
+          return <CartItem setSubTotal={setSubTotal} cart={cart} handleSubtract={handleSubtract} handleAdd={handleAdd} handleItemDelete={handleItemDelete} item={item}/>
         })
         return cartItems
       } else {
@@ -190,21 +183,10 @@ function CartSlider({handleLogout, handleCheckout, subTotal, handleAdd, handleSu
     })()
 
     useEffect(() => {
-      if (user) {
-        setCheckoutLogout(true)
-      } else {
-        setCheckoutLogout(false)
-      }
-      const greeting = (() => {
-        if (user) {
-          return `Hey, ${user.first}!`
-        } else {
-          return "Login to see cart"
-        }
-      })()
-      setHeaderText(greeting)
+      if (!user)
+      setSubTotal(0)
     }, [user])
-
+console.log('check', checkoutLogout)
   return (
     <div>
       <Burger onClick={() => setIsPaneOpen(!isPaneOpen)}>

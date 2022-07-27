@@ -73,17 +73,17 @@ const TotalReviews = styled.p`
   font-size: 18px;
 `
 
-function ReviewBar({rating, selectedProduct}) {
+function ReviewBar({productReviews, handleAddReview, rating, selectedProduct}) {
 
   return (
     <ProductReviewCont>
         <HeaderCont>
           <LeftCont>
             <Header>Reviews</Header>
-            <AddReview />
+            <AddReview handleAddReview={handleAddReview} selectedProduct={selectedProduct}/>
           </LeftCont>
           <ReviewInfoCont>
-            <Average>{selectedProduct.reviews.length}</Average>
+            <Average>{Math.round(rating*100)/100}</Average>
             <TotalCont>
               <StarCont>
               <StarRatings
@@ -97,7 +97,7 @@ function ReviewBar({rating, selectedProduct}) {
                 isAggregateRating={true}
               />
               </StarCont>
-              <TotalReviews>{`Total Reviews: ${selectedProduct.reviews.length}`}</TotalReviews>
+              <TotalReviews>{`Total Reviews: ${productReviews.length}`}</TotalReviews>
             </TotalCont>
           </ReviewInfoCont>
         </HeaderCont>

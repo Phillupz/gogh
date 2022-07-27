@@ -73,7 +73,7 @@ const QtyTextCont = styled.div`
  font-size:16px;
 `
 
-function CartItem({handleAdd, handleSubtract, handleItemDelete, item}) {
+function CartItem({setSubTotal, cart, handleAdd, handleSubtract, handleItemDelete, item}) {
   const [qty, setQty] = useState(1)
   const [visible, setVisible] = useState(true)
   const [product, setProduct] = useState([])
@@ -94,7 +94,7 @@ function CartItem({handleAdd, handleSubtract, handleItemDelete, item}) {
   }
 
   function onAdd() {
-    if (item.quantity === 1) {
+    if (item.quantity > 1) {
       handleAdd(item)
       setVisible(true)
     } else {
@@ -103,6 +103,7 @@ function CartItem({handleAdd, handleSubtract, handleItemDelete, item}) {
   }
 
   function onDelete() {
+    setSubTotal(cart.reduce((total, cartItem)=>total + (cartItem.product.price * cartItem.quantity),0))
     handleItemDelete(item)
   }
 

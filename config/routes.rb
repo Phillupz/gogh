@@ -6,7 +6,8 @@ Rails.application.routes.draw do
   get '/', to: 'users#index'
   
   resources :app_data, only: [:index]
-  resources :users, only: [:index, :show, :create, :destroy] do
+  resources :featured_products, only: [:index]
+  resources :users, only: [:index, :patch, :show, :create, :destroy] do
     resources :cart_items, only: [:index, :show, :create, :destroy]
   end
   resources :products, only: [:index, :show, :create, :update, :destroy] do

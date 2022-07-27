@@ -23,6 +23,7 @@ const Logo = styled.div`
   align-items:center;
   top: 1em;
   left: 1em;
+  cursor: pointer;
 `
 const MenuCont = styled.div`
   width: 100%;
@@ -86,8 +87,9 @@ const CartCont =styled.div`
   align-content: center;
 `
 
-function Nav({handleLogout, handleCheckout, subTotal, handleSubtract, handleAdd, cart, handleItemDelete, isPaneOpen, setIsPaneOpen, setCategory, whiteNav, onLogout, setIsAuthenticated}) {
+function Nav({setSubTotal, headerText, setHeaderText, checkoutLogout, setCheckoutLogout, handleLogout, handleCheckout, subTotal, handleSubtract, handleAdd, cart, handleItemDelete, isPaneOpen, setIsPaneOpen, setCategory, whiteNav, onLogout, setIsAuthenticated}) {
   const match = useRouteMatch()
+  const history = useHistory()
 
   const iconDisplay = (() => {
     if (match.path.toLowerCase().includes("checkout")) {
@@ -97,7 +99,7 @@ function Nav({handleLogout, handleCheckout, subTotal, handleSubtract, handleAdd,
     } else {
       return (
         <CartCont>
-          <CartSlider handleLogout={handleLogout} handleCheckout={handleCheckout} subTotal={subTotal} handleSubtract={handleSubtract} handleAdd={handleAdd} cart={cart} handleItemDelete={handleItemDelete} isPaneOpen={isPaneOpen} setIsPaneOpen={setIsPaneOpen} whiteNav={whiteNav}/>
+          <CartSlider setSubTotal={setSubTotal} headerText={headerText} setHeaderText={setHeaderText} checkoutLogout={checkoutLogout} setCheckoutLogout={setCheckoutLogout} handleLogout={handleLogout} handleCheckout={handleCheckout} subTotal={subTotal} handleSubtract={handleSubtract} handleAdd={handleAdd} cart={cart} handleItemDelete={handleItemDelete} isPaneOpen={isPaneOpen} setIsPaneOpen={setIsPaneOpen} whiteNav={whiteNav}/>
         </CartCont>
         )
     }
@@ -109,7 +111,7 @@ function Nav({handleLogout, handleCheckout, subTotal, handleSubtract, handleAdd,
   return (
     <NavContainer>
       <Logo>
-        <LogoImage src={whiteNav ? whiteLogo : blackLogo}/>
+        <LogoImage onClick={() => {return history.push('/home')}} src={whiteNav ? whiteLogo : blackLogo}/>
       </Logo>
       <MenuCont>
         <LeftMenuCont>

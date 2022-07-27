@@ -220,6 +220,7 @@ const CloseCont = styled.div`
 
 export default function OrderDetails({handleOrderDelete, handleStatusChange, selectedOrder, orderItems, visible, setVisible}) {
   const [orderRow, setOrderRow] = useState([])
+  const [orderTotal, setOrderTotal] = useState(0)
   const [status, setStatus] = useState({
     new: false,
     shipped: false,
@@ -230,6 +231,7 @@ export default function OrderDetails({handleOrderDelete, handleStatusChange, sel
       fetch(`/orders/${selectedOrder.id}`)
       .then((r) => r.json())
       .then((data) => {
+        setOrderTotal(selectedOrder.total.toFixed(2))
         switch(data.status) {
           case "new":
             return setStatus({
@@ -344,7 +346,7 @@ export default function OrderDetails({handleOrderDelete, handleStatusChange, sel
                 </OrderItemCont>
               </DisplayCont>
               <BottomCont>
-                <OrderTotal>Order Total: $640</OrderTotal>
+                <OrderTotal>{`Order Total: $${orderTotal}`}</OrderTotal>
               </BottomCont>
             </OrderItems>
             <Details>

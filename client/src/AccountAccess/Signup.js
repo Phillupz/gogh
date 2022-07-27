@@ -121,7 +121,7 @@ const ErrorLi = styled.li`
   font-size: 12px;
 `
 
-function Signup({setIsAuthenticated, setShowLogin}) {
+function Signup({setCheckoutLogout, setHeaderText, setIsAuthenticated, setShowLogin}) {
   const history = useHistory()
   const [errors, setErrors] = useState([])
   const dispatch = useDispatch()
@@ -157,6 +157,8 @@ function Signup({setIsAuthenticated, setShowLogin}) {
         r.json()
         .then((user) => {
           dispatch(login(user))
+          setHeaderText(`Hey, ${user.first}!`)
+          setCheckoutLogout(true)
           // setIsAuthenticated(true)
           history.push("/shop")
         })

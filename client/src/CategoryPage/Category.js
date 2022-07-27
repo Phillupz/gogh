@@ -1,10 +1,12 @@
 import {React, useState, useEffect} from 'react'
+import {useHistory} from 'react-router-dom'
 import styled from 'styled-components'
 import Nav from '../Navigation/Nav.js'
 import Product from './Product.js'
 import Menu from './Menu.js'
 import {FiSearch} from 'react-icons/fi'
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { login } from "../Redux/userSlice"
 
 const CategoryCont = styled.div`
 height: 100%;
@@ -110,12 +112,21 @@ text-align:center;
 font-size:52px;
 `
 
-function Category({handleLogout, handleCheckout, handleItemDelete, setSubTotal, subTotal, handleAdd, handleSubtract, cart, setCart, isPaneOpen, setIsPaneOpen, handleProductClick, setCategory, category, whiteNav, setWhiteNav, products, onLogout}){
+function Category({headerText, setHeaderText, checkoutLogout, setCheckoutLogout, handleLogout, handleCheckout, handleItemDelete, setSubTotal, subTotal, handleAdd, handleSubtract, cart, setCart, isPaneOpen, setIsPaneOpen, handleProductClick, setCategory, category, whiteNav, setWhiteNav, products, onLogout}){
   const [categoryFilter, setCategoryFilter] = useState("All")
   const [search, setSearch] = useState("")
   const [azSort, setAzSort] = useState(false)
   const [lowHighSort, setLowHighSort] = useState(false)
+  const dispatch = useDispatch()
   const user = useSelector((state) => state.user.value)
+
+  console.log('user', user)
+
+  useEffect(() => {
+    if (!user || user.length === 0) {
+      return setCheckoutLogout(false)
+    }
+   }, [])
 
   useEffect(() => {
     if (user) {
@@ -124,9 +135,8 @@ function Category({handleLogout, handleCheckout, handleItemDelete, setSubTotal, 
      .then((data) => {
        setSubTotal(data.reduce((total, item)=>total + (item.product.price * item.quantity),0))
      })
-    }
+    } 
    }, [])
-    
 
   useEffect(() => {
     setIsPaneOpen(false)
@@ -135,10 +145,20 @@ function Category({handleLogout, handleCheckout, handleItemDelete, setSubTotal, 
       if (res.ok) {
         res.json()
         .then((user) => {
+          dispatch(login(user))
+          setSubTotal(0)
+          setHeaderText(`Hey, ${user.first}`)
           fetch(`/users/${user.id}/cart_items`)
           .then((r) => r.json())
-          .then((data) => setCart(data.reverse()))
+          .then((data) => {
+            setCheckoutLogout(true)
+            setCart(data.reverse())
+            setSubTotal(data.reduce((total, item)=>total + (item.product.price * item.quantity),0))
+
+          })
         })
+      } else {
+        setCheckoutLogout(false)
       }
     })
   }, [])
@@ -205,7 +225,7 @@ function Category({handleLogout, handleCheckout, handleItemDelete, setSubTotal, 
 
   return (
     <CategoryCont>
-      <Nav handleLogout={handleLogout} handleCheckout={handleCheckout} handleItemDelete={handleItemDelete} subTotal={subTotal} handleAdd={handleAdd} handleSubtract={handleSubtract} cart={cart} setCart={setCart} isPaneOpen={isPaneOpen} setIsPaneOpen={setIsPaneOpen} setCategory={setCategory} whiteNav={whiteNav} onLogout={onLogout}/>
+      <Nav setSubTotal={setSubTotal} headerText={headerText} setHeaderText={setHeaderText} checkoutLogout={checkoutLogout} setCheckoutLogout={setCheckoutLogout} handleLogout={handleLogout} handleCheckout={handleCheckout} handleItemDelete={handleItemDelete} subTotal={subTotal} handleAdd={handleAdd} handleSubtract={handleSubtract} cart={cart} setCart={setCart} isPaneOpen={isPaneOpen} setIsPaneOpen={setIsPaneOpen} setCategory={setCategory} whiteNav={whiteNav} onLogout={onLogout}/>
       {
         category === "All"
         ? (
