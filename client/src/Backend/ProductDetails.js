@@ -1,13 +1,128 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-awesome-modal';
 import styled from "styled-components"
-import { VscAdd } from "react-icons/vsc"
-import { AiOutlineSend } from "react-icons/ai"
-import { BsSlack } from 'react-icons/bs';
-import OrderItem from "./OrderItem.js"
-import {AiOutlineClose} from 'react-icons/ai'
 import {BsFillImageFill} from 'react-icons/bs'
 import ImageUploading from "react-images-uploading";
+
+export default function ProductDetails({handleProductDelete, inputData, setInputData, handleProductUpdate, selectedProduct, productVisible, setProductVisible}) {
+  const [images, setImages] = React.useState([])
+  const [image, setImage] = React.useState(["https://i.ibb.co/gdBmJ7L/van-gogh-logo.pn"])
+  
+  useEffect(() =>{
+    setImage(selectedProduct.image)
+  }, [selectedProduct])
+
+  function handleChange(e){
+    const name = e.target.name
+    const value = e.target.value
+    setInputData({
+      ...inputData,
+      [name]: value
+    })
+  }
+
+  function handleSubmit() {
+    handleProductUpdate(image)
+    setInputData({
+      name: "",
+      description_1: "",
+      price: "",
+    })
+  }
+
+  const onChange = (imageList) => {
+    setImage(imageList[0].data_url)
+  }
+
+  function handleDelete() {
+    const id = selectedProduct.id
+    handleProductDelete(id)
+  }
+
+
+return (
+  <section>
+    <Modal visible={productVisible} width="1200" height="600" effect="fadeInUp" onClickAway={() => {
+      setProductVisible(!productVisible)
+      setImage("https://i.ibb.co/gdBmJ7L/van-gogh-logo.png")
+      setInputData({
+        name: "",
+        description_1: "",
+        price: "",
+      })
+      }}>
+      <ProductDetailsCont>
+        <LeftCont>
+          <ImageHeader>
+            <Header>Image</Header>
+          </ImageHeader>
+        <DisplayCont>
+          <ImageCont>
+            <ProductImage name="image" src={image}/>
+          </ImageCont>
+        </DisplayCont>
+          <LeftBottomCont>
+            <NewImageCont>
+            <ImageUploading
+              value={images}
+              onChange={onChange}
+              maxNumber={50}
+              dataURLKey="data_url"
+              acceptType={["png"]}
+            >
+              {({
+                onImageUpload,
+                dragProps
+              }) => (
+            <>
+            <ImageButtonCont 
+              onClick={onImageUpload}
+              {...dragProps}
+            >
+              <AddImageText>Add Image</AddImageText>
+              <ImageIconCont>
+                <BsFillImageFill color={'5a5a5a'} size={18}/>
+              </ImageIconCont>
+            </ImageButtonCont>
+            </>
+          )}
+        </ImageUploading>
+            </NewImageCont>
+          </LeftBottomCont>
+        </LeftCont>
+        <RightCont>
+          <DetailsHeader>
+            <Header>Product Details</Header>
+          </DetailsHeader>
+          <DetailsDisplayCont>
+            <DetailOptionsWrapper>
+              <DetailOptions>
+                <OptionCont>Name:</OptionCont>
+              </DetailOptions>
+              <DetailOptions>
+                <OptionCont>Price:</OptionCont>
+              </DetailOptions>
+              <DetailOptions>
+                <OptionCont>Description:</OptionCont>
+              </DetailOptions>
+            </DetailOptionsWrapper>
+            <InputCont>
+              <Input name="name" onChange={handleChange} placeholder={selectedProduct.name} value={inputData.name}/>
+              <Input name="price" onChange={handleChange} placeholder={selectedProduct.price} value={inputData.price}/>
+              <Description value={inputData.description_1} name="description_1" onChange={handleChange} placeholder={selectedProduct.description_1}>
+              </Description>
+            </InputCont>
+          </DetailsDisplayCont>
+          <RightBottomCont>
+            <LeftButtonCont><Button onClick={handleSubmit}>Update</Button></LeftButtonCont>
+            <RightButtonCont><DeleteButton onClick={handleDelete} >Delete</DeleteButton></RightButtonCont>
+          </RightBottomCont>
+        </RightCont>
+      </ProductDetailsCont>
+    </Modal>
+  </section>
+  )
+}
 
 const ProductDetailsCont = styled.div`
   height:100%;
@@ -119,23 +234,23 @@ const Input = styled.input`
 `
 
 const Description = styled.textarea`
-padding:8px;
-border: 1px solid #eee;
-font-size: 16px;
-outline: none;
-margin-top: 8px;
-font-family: Josefin Sans, sans-serif;
-width: 97%;
-resize:vertical;
-min-height: 200px;
-max-height: 400px;
-transition: .3s;
-&::-webkit-scrollbar {
-  display: none;
-};
-&&:hover {
-  border: 1px solid #ccc;
-};
+  padding:8px;
+  border: 1px solid #eee;
+  font-size: 16px;
+  outline: none;
+  margin-top: 8px;
+  font-family: Josefin Sans, sans-serif;
+  width: 97%;
+  resize:vertical;
+  min-height: 200px;
+  max-height: 400px;
+  transition: .3s;
+  &::-webkit-scrollbar {
+    display: none;
+  };
+  &&:hover {
+    border: 1px solid #ccc;
+}
 `
 
 const RightBottomCont = styled.div`
@@ -195,12 +310,6 @@ const DeleteButton = styled.button`
   }
 `
 
-const CloseCont = styled.div`
-  position: fixed;
-  right:7px;
-  top: 7px;
-`
-
 const LeftBottomCont = styled.div`
   height: 100%;
   width: 100%;
@@ -247,132 +356,3 @@ const ImageIconCont = styled.div`
   justify-content:center;
   align-content:center;
 `
-
-export default function ProductDetails({handleProductDelete, inputData, setInputData, handleProductUpdate, selectedProduct, productVisible, setProductVisible}) {
-  const [images, setImages] = React.useState([])
-  const [image, setImage] = React.useState([])
-
-  console.log(selectedProduct)
-  
-  useEffect(() =>{
-    setImage(selectedProduct.image)
-  }, [selectedProduct])
-
-  function handleChange(e){
-    const name = e.target.name
-    const value = e.target.value
-    setInputData({
-      ...inputData,
-      [name]: value
-    })
-  }
-
-  function handleSubmit() {
-    handleProductUpdate(image)
-    setInputData({
-      name: "",
-      description_1: "",
-      price: "",
-    })
-  }
-
-  const onChange = (imageList) => {
-    setImage(imageList[0].data_url)
-  }
-
-  function handleDelete() {
-    const id = selectedProduct.id
-    handleProductDelete(id)
-  }
-
-
-return (
-  <section>
-    <Modal visible={productVisible} width="1200" height="600" effect="fadeInUp" onClickAway={() => {
-      setProductVisible(!productVisible)
-      setImage("https://i.ibb.co/mTFFpMB/logo3.png")
-      setInputData({
-        name: "",
-        description_1: "",
-        price: "",
-      })
-      }}>
-      {/* <CloseCont><AiOutlineClose color="black"/></CloseCont> */}
-      <ProductDetailsCont>
-        <LeftCont>
-          <ImageHeader>
-            <Header>Image</Header>
-          </ImageHeader>
-        <DisplayCont>
-          <ImageCont>
-            <ProductImage name="image" src={image}/>
-          </ImageCont>
-        </DisplayCont>
-          <LeftBottomCont>
-            <NewImageCont>
-            <ImageUploading
-              value={images}
-              onChange={onChange}
-              maxNumber={50}
-              dataURLKey="data_url"
-              acceptType={["png"]}
-            >
-              {({
-                imageList,
-                onImageUpload,
-                onImageRemoveAll,
-                onImageUpdate,
-                onImageRemove,
-                isDragging,
-                dragProps
-              }) => (
-            <>
-             {/* <NewImageCont>Image</NewImageCont> */}
-            <ImageButtonCont 
-              onClick={onImageUpload}
-              {...dragProps}
-            >
-              <AddImageText>Add Image</AddImageText>
-              <ImageIconCont>
-                <BsFillImageFill color={'5a5a5a'} size={18}/>
-              </ImageIconCont>
-            </ImageButtonCont>
-            </>
-          )}
-        </ImageUploading>
-            </NewImageCont>
-          </LeftBottomCont>
-        </LeftCont>
-        <RightCont>
-          <DetailsHeader>
-            <Header>Product Details</Header>
-          </DetailsHeader>
-          <DetailsDisplayCont>
-            <DetailOptionsWrapper>
-              <DetailOptions>
-                <OptionCont>Name:</OptionCont>
-              </DetailOptions>
-              <DetailOptions>
-                <OptionCont>Price:</OptionCont>
-              </DetailOptions>
-              <DetailOptions>
-                <OptionCont>Description:</OptionCont>
-              </DetailOptions>
-            </DetailOptionsWrapper>
-            <InputCont>
-              <Input name="name" onChange={handleChange} placeholder={selectedProduct.name} value={inputData.name}/>
-              <Input name="price" onChange={handleChange} placeholder={selectedProduct.price} value={inputData.price}/>
-              <Description value={inputData.description_1} name="description_1" onChange={handleChange} placeholder={selectedProduct.description_1}>
-              </Description>
-            </InputCont>
-          </DetailsDisplayCont>
-          <RightBottomCont>
-            <LeftButtonCont><Button onClick={handleSubmit}>Update</Button></LeftButtonCont>
-            <RightButtonCont><DeleteButton onClick={handleDelete} >Delete</DeleteButton></RightButtonCont>
-          </RightBottomCont>
-        </RightCont>
-      </ProductDetailsCont>
-    </Modal>
-  </section>
-  )
-}

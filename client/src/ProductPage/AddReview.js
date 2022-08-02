@@ -1,9 +1,66 @@
-import React, { useState } from 'react';
-import Modal from 'react-awesome-modal';
+import React, { useState } from 'react'
+import {useHistory} from 'react-router-dom'
+import Modal from 'react-awesome-modal'
 import styled from "styled-components"
 import { VscAdd } from "react-icons/vsc"
-import { AiOutlineSend } from "react-icons/ai"
 import StarRating from './StarRating.js'
+import { useSelector } from "react-redux";
+
+export default function AddReview({handleAddReview, selectedProduct}) {
+  const [visible, setVisible] = useState()
+  const [reviewText, setReviewText] = useState("")
+  const [starRating, setStarRating] = useState(0)
+  const history = useHistory()
+  const user = useSelector((state) => state.user.value)
+
+
+  function onAddReview() {
+    setReviewText("")
+    setStarRating(0)
+    handleAddReview(selectedProduct, reviewText, starRating)
+    setVisible(!visible)
+  }
+
+  function onChange(e) {
+    setReviewText(e.target.value)
+  }
+
+  function handleClick() {
+    if (!user || user.length === 0 || user.first === "") {
+      history.push('/welcome')
+    } else {
+      setVisible(!visible)
+    }
+  }
+  
+    return (
+      <section>
+        <Button type="button" value="Open" onClick={handleClick}><VscAdd size={22}/></Button>
+        <Modal visible={visible} width="500" height="375" effect="fadeInUp" onClickAway={() => {
+          setVisible(!visible)
+          setReviewText("")
+          setStarRating(0)
+        }}>
+          <NewReviewCont>
+            <Image src="https://i.ibb.co/4sQCvDG/logo2.png"/>
+            <InnerReviewCont>
+              <ReviewCont>
+                <InputCont>
+                  <StarCont>
+                    <StarRating starRating={starRating} setStarRating={setStarRating}/>
+                  </StarCont>
+                  <Input onChange={onChange} value={reviewText} placeholder='Enter Review'/>
+                  <ButtonCont>
+                    <AddButton onClick={onAddReview}>Review</AddButton>
+                  </ButtonCont>
+                </InputCont>
+              </ReviewCont>
+            </InnerReviewCont>
+          </NewReviewCont>
+        </Modal>
+      </section>
+    )
+  }
 
 const NewReviewCont = styled.div`
   height:100%;
@@ -25,7 +82,7 @@ const Image = styled.img`
   margin-right:auto;
   padding: 10px;
   height: 8em;
-  width: 10em;
+  width: em;
   top: 10px;
   margin-top:1em;
 `
@@ -89,45 +146,3 @@ const Input = styled.textarea`
   }
 
 `
-
-export default function AddReview({handleAddReview, selectedProduct}) {
-  const [visible, setVisible] = useState()
-  const [reviewText, setReviewText] = useState("")
-  const [starRating, setStarRating] = useState(0)
-
-
-  function onAddReview() {
-    setReviewText("")
-    setStarRating(0)
-    handleAddReview(selectedProduct, reviewText, starRating)
-    setVisible(!visible)
-  }
-
-  function onChange(e) {
-    setReviewText(e.target.value)
-  }
-  
-    return (
-      <section>
-        <Button type="button" value="Open" onClick={() => setVisible(!visible)}><VscAdd size={22}/></Button>
-        <Modal visible={visible} width="500" height="375" effect="fadeInUp" onClickAway={() => setVisible(!visible)}>
-          <NewReviewCont>
-            <Image src="https://i.ibb.co/RcLmfKX/logo2.png"/>
-            <InnerReviewCont>
-              <ReviewCont>
-                <InputCont>
-                  <StarCont>
-                    <StarRating starRating={starRating} setStarRating={setStarRating}/>
-                  </StarCont>
-                  <Input onChange={onChange} value={reviewText} placeholder='Enter Review'/>
-                  <ButtonCont>
-                    <AddButton onClick={onAddReview}>Review</AddButton>
-                  </ButtonCont>
-                </InputCont>
-              </ReviewCont>
-            </InnerReviewCont>
-          </NewReviewCont>
-        </Modal>
-      </section>
-    )
-  }

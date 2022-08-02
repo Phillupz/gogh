@@ -1,7 +1,6 @@
 import {React, useEffect, useState} from "react";
-import { Switch, useHistory, Route, useRouteMatch} from "react-router-dom"
+import { Switch, useHistory, Route, useLocation} from "react-router-dom"
 import styled from 'styled-components'
-import { toast } from "react-toastify";
 import './App.css'
 import Checkout from './CheckoutPage/Checkout.js'
 import AccountAccess from './AccountAccess/LoginForm.js'
@@ -13,21 +12,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { login, logout } from "./Redux/userSlice"
 import Home from './Home/Home.js'
 
-const AppCont = styled.div`
-  text-align: center;
-  scroll-behavior: auto;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-`
-
 function App() {
   const history = useHistory()
+  const [loadCont, setLoadCont] = useState(false)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [errors, setErrors] = useState([]);
   const [products, setProducts] = useState([])
   const [order, setOrder] = useState([])
-  const [reviews, setReviews] = useState([])
   const [whiteNav, setWhiteNav] = useState(false)
   const [category, setCategory] = useState("All")
   const [selectedProduct, setSelectedProduct] = useState([])
@@ -38,9 +29,18 @@ function App() {
   const [paymentSuccess, setPaymentSuccess] = useState(false)
   const [headerText, setHeaderText] = useState("Login to see cart")
   const [checkoutLogout, setCheckoutLogout] = useState(false)
-
   const dispatch = useDispatch()
+  const location = useLocation()
+  const [productReviews, setProductReviews] = useState([])
   const user = useSelector((state) => state.user.value)
+
+
+
+  useEffect(() => {
+    fetch(`/reviews`)
+    .then((r) => r.json())
+    .then((data) => setProductReviews(data.reverse()))
+  }, [])
 
   useEffect(() => {
     fetch('/authorize_user')
@@ -55,9 +55,11 @@ function App() {
   }, [])
 
   useEffect(() => {
-    if ((!selectedProduct || selectedProduct.length === 0) || (!category || category.length === 0))
+    if ((location.pathname !== '/admin') && (location.pathname !== '/admin/backend' ) && (location.pathname !== '/welcome' )) {
+      if ((!selectedProduct || selectedProduct.length === 0) || (!category || category.length === 0))
     {
       return history.push('/home')
+    }
     }
    }, [])
    
@@ -83,8 +85,8 @@ function App() {
     })
     .then((r) => r.json())
     .then((data) => {
-      const updatedReviews = [reviews.push(data)]
-      setReviews(updatedReviews)
+      console.log("data", data.user)
+      setProductReviews([data, ...productReviews])
     })
   }
 
@@ -111,18 +113,9 @@ function App() {
     setSubTotal(0)
     setCheckoutLogout(false)
     setHeaderText("Login to see cart")
-    history.push('/shop/all')
+    history.push('/home')
   })
   }
-
-  useEffect(() => {
-    const cartCheck = cart.filter((item) => {
-      return (item.product_id === selectedProduct.id)
-  
-    }) 
-      if (cartCheck.length > 0) 
-        return setSubTotal(cart.reduce((total, item)=>total + (item.product.price * item.quantity),0))
-  })
 
   function handleCheckout(subTotal){   
     history.push('/checkout')
@@ -140,8 +133,11 @@ function App() {
     })
   }
 
+  
+
+
   function handleAddToCart() {
-    if (!user || user.length === 0) {
+    if (!user || user.length === 0 || user.first === "") {
       return history.push('/welcome')
     } else {
       const configObj = {
@@ -196,7 +192,6 @@ function App() {
   }
 
   function handleAdd(item) {
-    setSubTotal(cart.reduce((total, item)=>total + (item.product.price * item.quantity),0))
     fetch(`/cart_items/${item.id}`, {
       method: 'PATCH',
       headers: {
@@ -221,7 +216,7 @@ function App() {
   }
 
   function handleSubtract(item){
-    setSubTotal(cart.reduce((total, item)=>total + (item.product.price * item.quantity),0))
+    console.log("q", item.quantity)
     fetch(`/cart_items/${item.id}`, {
       method: 'PATCH',
       headers: {
@@ -245,7 +240,9 @@ function App() {
     })
   }
 
+
   function handleToken(token) {
+    setLoadCont(true)
     const charge = {token: token.id}
     fetch('/charges', {
       method: 'POST',
@@ -263,9 +260,14 @@ function App() {
           .then(() => {
             setCart([])
             setSubTotal(0)
+            setLoadCont(false)
             setPaymentSuccess(true)
+            setTimeout(() => {
+              setLoadCont(false)
+              setPaymentSuccess(false)
+            }, 10000)
             const configObj = {
-              total: (subTotal * 1.0875).toFixed(2), 
+              total: parseFloat((subTotal * 1.0875).toFixed(2)), 
               user_id: user.id,
               status: "new"
             }
@@ -332,10 +334,10 @@ function App() {
           <AdminLogin />
         </Route>
         <Route exact path='/checkout'>
-          <Checkout paymentSuccess={paymentSuccess} setWhiteNav={setWhiteNav} setCategory={setCategory} handleItemDelete={handleItemDelete} setSubTotal={setSubTotal} subTotal={subTotal} handleAdd={handleAdd} handleSubtract={handleSubtract} cart={cart} whiteNav={whiteNav} handleToken={handleToken} />
+          <Checkout  setLoadCont={setLoadCont} setPaymentSuccess={setPaymentSuccess} loadCont={loadCont} paymentSuccess={paymentSuccess} setWhiteNav={setWhiteNav} setCategory={setCategory} handleItemDelete={handleItemDelete} setSubTotal={setSubTotal} subTotal={subTotal} handleAdd={handleAdd} handleSubtract={handleSubtract} cart={cart} whiteNav={whiteNav} handleToken={handleToken} />
         </Route>
         <Route exact path={`/shop/${routeFormat}`}>
-          <Product setRouteFormat={setRouteFormat} reviews={reviews} setReviews={setReviews} handleAddReview={handleAddReview} setSubTotal={setSubTotal} headerText={headerText} setHeaderText={setHeaderText} checkoutLogout={checkoutLogout} setCheckoutLogout={setCheckoutLogout} handleLogout={handleLogout} handleCheckout={handleCheckout} handleItemDelete={handleItemDelete} subTotal={subTotal} handleAdd={handleAdd} handleSubtract={handleSubtract} handleAddToCart={handleAddToCart} cart={cart} setCart={setCart} isPaneOpen={isPaneOpen} setIsPaneOpen={setIsPaneOpen} setCategory={setCategory} selectedProduct={selectedProduct} whiteNav={whiteNav} setWhiteNav={setWhiteNav}/>
+          <Product productReviews={productReviews} setProductReviews={setProductReviews} setRouteFormat={setRouteFormat} handleAddReview={handleAddReview} setSubTotal={setSubTotal} headerText={headerText} setHeaderText={setHeaderText} checkoutLogout={checkoutLogout} setCheckoutLogout={setCheckoutLogout} handleLogout={handleLogout} handleCheckout={handleCheckout} handleItemDelete={handleItemDelete} subTotal={subTotal} handleAdd={handleAdd} handleSubtract={handleSubtract} handleAddToCart={handleAddToCart} cart={cart} setCart={setCart} isPaneOpen={isPaneOpen} setIsPaneOpen={setIsPaneOpen} setCategory={setCategory} selectedProduct={selectedProduct} whiteNav={whiteNav} setWhiteNav={setWhiteNav}/>
         </Route>
         <Route exact path={`/shop/${category}`}>
           <Category setHeaderText={setHeaderText}  setCheckoutLogout={setCheckoutLogout} setSubTotal={setSubTotal} headerText={headerText} checkoutLogout={checkoutLogout} handleLogout={handleLogout} handleCheckout={handleCheckout} handleItemDelete={handleItemDelete} subTotal={subTotal} handleAdd={handleAdd} handleSubtract={handleSubtract} cart={cart} setCart={setCart} isPaneOpen={isPaneOpen} setIsPaneOpen={setIsPaneOpen}  handleProductClick={handleProductClick} category={category} setCategory={setCategory} whiteNav={whiteNav} setWhiteNav={setWhiteNav} products={products} onLogout={onLogout} />
@@ -350,5 +352,13 @@ function App() {
     </AppCont>
   )
 }
+
+const AppCont = styled.div`
+  text-align: center;
+  scroll-behavior: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`
 
 export default App

@@ -1,7 +1,36 @@
 import React from "react"
+import {useHistory} from 'react-router-dom'
 import styled from 'styled-components'
-import { useHistory } from 'react-router-dom'
 import { MdOutlineLogout } from "react-icons/md"
+
+function BackNav({whiteNav, handleBackLogout, setIsAuthenticated, setUser}) {
+  const history = useHistory()
+  function handleLogout() {
+    handleBackLogout()
+  }
+
+   const whiteLogo = "https://i.ibb.co/DtSL2vW/logowhite-removebg-preview.png"
+   const blackLogo = "https://i.ibb.co/KhWHXGN/Logo.png"
+
+  return (
+    <NavContainer>
+      <Logo>
+        <LogoImage onClick={() => {return history.push('/home')}} src={whiteNav ? whiteLogo : blackLogo}/>
+      </Logo>
+      <MenuCont>
+        <LeftMenuCont>
+        </LeftMenuCont>
+        <RightMenuCont>
+          <BurgerCont>
+            <CartCont>
+              <MdOutlineLogout color={"black"} onClick={handleLogout} size={22}/>
+            </CartCont>
+          </BurgerCont>
+        </RightMenuCont>
+      </MenuCont>
+    </NavContainer>
+  )
+}
 
 const NavContainer = styled.div`
   display: grid;
@@ -22,6 +51,7 @@ const Logo = styled.div`
   align-items:center;
   top: 1em;
   left: 1em;
+  cursor: pointer;
 `
 const MenuCont = styled.div`
   width: 100%;
@@ -42,29 +72,11 @@ const RightMenuCont = styled.div`
   justify-content:end
 `
 
-const RightButtonCont = styled.div`
-  height:100%;
-  width:75%;
-  display: grid;
-  justify-content: center;
-  grid-gap: 10%;
-  align-items: center;
-  justify-content: end;
-`
-
 const LeftMenuCont = styled.div`
   width:100%;
   height: 100%;
   display: grid;
   justify-content: left;
-`
-
-const IconCont = styled.div`
-  height: 100%;
-  width: 100%;
-  display: grid;
-  justify-content:center;
-  align-content: center;
 `
 
 const LogoImage = styled.img`
@@ -85,34 +97,5 @@ const CartCont =styled.div`
   align-content: center;
   cursor: pointer;
 `
-
-function BackNav({whiteNav, handleBackLogout, setIsAuthenticated, setUser}) {
-
-  function handleLogout() {
-    handleBackLogout()
-  }
-
-   const whiteLogo = "https://i.ibb.co/DtSL2vW/logowhite-removebg-preview.png"
-   const blackLogo = "https://i.ibb.co/KhWHXGN/Logo.png"
-
-  return (
-    <NavContainer>
-      <Logo>
-        <LogoImage src={whiteNav ? whiteLogo : blackLogo}/>
-      </Logo>
-      <MenuCont>
-        <LeftMenuCont>
-        </LeftMenuCont>
-        <RightMenuCont>
-          <BurgerCont>
-            <CartCont>
-              <MdOutlineLogout color={"black"} onClick={handleLogout} size={22}/>
-            </CartCont>
-          </BurgerCont>
-        </RightMenuCont>
-      </MenuCont>
-    </NavContainer>
-  )
-}
 
 export default BackNav

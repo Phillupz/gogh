@@ -1,6 +1,25 @@
 import {React, useState }from 'react'
 import styled from 'styled-components'
-import Product from '../CategoryPage/Product'
+
+function ProductComp({ handleProductClick, productVisible, setProductVisible, product}) {
+
+  function productClick() {
+    setProductVisible(!productVisible)
+    handleProductClick(product.id)
+  }
+
+  return (
+    <ProductCont onClick={productClick}> 
+      <InnerProductCont>
+        <Image src={product.image}/>
+        <InfoCont>
+            <ProductName>{product.name}</ProductName>
+            <ProductPrice>{`$${product.price}`}</ProductPrice>
+        </InfoCont>
+      </InnerProductCont>
+    </ProductCont>
+  )
+}
 
 const ProductCont = styled.div`
   height: 5em;
@@ -52,31 +71,5 @@ const ProductPrice = styled.p`
   color:black;
   border-left: 1px solid #eee
 `
-
-
-const StockText = styled.div`
- color: black;
- font-size:16px;
-`
-
-function ProductComp({ handleProductClick, productVisible, setProductVisible, product}) {
-
-  function productClick() {
-    setProductVisible(!productVisible)
-    handleProductClick(product.id)
-  }
-
-  return (
-    <ProductCont onClick={productClick}> 
-      <InnerProductCont>
-        <Image src={product.image}/>
-        <InfoCont>
-            <ProductName>{product.name}</ProductName>
-            <ProductPrice>{`$${product.price}`}</ProductPrice>
-        </InfoCont>
-      </InnerProductCont>
-    </ProductCont>
-  )
-}
 
 export default ProductComp

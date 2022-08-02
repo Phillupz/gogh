@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   post '/login', to: 'sessions#login'
   delete '/logout', to: 'sessions#logout'
   get '/authorize_user', to: 'users#show'
+  get '/admin', to: 'users#show'
   get '/', to: 'users#index'
   
   resources :app_data, only: [:index]

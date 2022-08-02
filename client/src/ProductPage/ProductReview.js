@@ -3,6 +3,37 @@ import styled from 'styled-components'
 import { ImLocation2 } from 'react-icons/im'
 import StarRatings from 'react-star-ratings'
 
+function ProductReview({review}) {
+
+  return (
+    <ProductReviewCont>
+      <HeaderCont>
+        <LeftCont>
+          <User>{`${review.user.first} ${review.user.last}`}</User>
+          <LocationCont>
+            <ImLocation2 size={12}/>
+            <Location>{review.user.state}</Location>
+          </LocationCont>
+        </LeftCont>
+        <ReviewCont>
+          <StarCont>
+            <StarRatings
+              rating={review.rating}
+              starRatedColor="#000"
+              numberOfStars={5}
+              starEmptyColor="#ccc"
+              name='rating'
+              starDimension="18px"
+              starSpacing="5px"
+            />
+          </StarCont> 
+            <ReviewText>{review.text}</ReviewText>
+          </ReviewCont>
+       </HeaderCont>
+    </ProductReviewCont>
+  )
+}
+
 const ProductReviewCont = styled.div`
   padding: 3px;
   height: 6em;
@@ -65,60 +96,5 @@ const ReviewText = styled.p`
   color: black;
   text-align: left;
 `
-
-function ProductReview({review}) {
-  const [userReview, setUserReview] = useState({
-    id: "",
-    rating: "",
-    text: "",
-    product_id: "",
-    product: "",
-    user: "",
-  })
-
-  useEffect(() => {
-    fetch(`/reviews/${review.id}`)
-    .then((r) => r.json())
-    .then((data) => setUserReview({
-      ...userReview, 
-      id: data.id,
-      rating: data.rating,
-      text: data.text,
-      product_id: data.product_id,
-      product: data.product,
-      user: data.user,
-    }))
-  }, [])
-
-  
-  return (
-    <ProductReviewCont>
-      <HeaderCont>
-        <LeftCont>
-          <User>{`${userReview.user.first} ${userReview.user.last}`}</User>
-          <LocationCont>
-            <ImLocation2 size={12}/>
-            <Location>{userReview.user.state}</Location>
-          </LocationCont>
-        </LeftCont>
-        <ReviewCont>
-          <StarCont>
-            <StarRatings
-              rating={review.rating}
-              starRatedColor="#000"
-              numberOfStars={5}
-              starEmptyColor="#ccc"
-              name='rating'
-              starDimension="18px"
-              starSpacing="5px"
-            />
-          </StarCont> 
-            <ReviewText>{review.text}</ReviewText>
-          </ReviewCont>
-       </HeaderCont>
-    </ProductReviewCont>
-  )
-}
-
 
 export default ProductReview

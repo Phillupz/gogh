@@ -1,5 +1,21 @@
-import {React, useState }from 'react'
+import React from 'react'
 import styled from 'styled-components'
+
+function OrderItem({item}) {
+  return (
+    <OrderItemCont> 
+      <Image src={item.product.image}/>
+      <InfoCont>
+        <ProductName>{item.product.name}</ProductName>
+        <ProductPrice>{`$${item.product.price}`}</ProductPrice>
+        <QtyCont>
+          <QtyTextCont>{item.quantity}</QtyTextCont>
+        </QtyCont>
+        <Total>{`$${item.product.price * item.quantity}`}</Total>
+      </InfoCont>
+    </OrderItemCont>
+  )
+}
 
 const OrderItemCont = styled.div`
   height: 5em;
@@ -47,24 +63,8 @@ const Total = styled.div`
 `
 
 const QtyTextCont = styled.div`
- color: black;
- font-size:16px;
+  color: black;
+  font-size:16px;
 `
-
-function OrderItem({item}) {
-  return (
-    <OrderItemCont> 
-      <Image src={item.product.image}/>
-      <InfoCont>
-        <ProductName>{item.product.name}</ProductName>
-        <ProductPrice>{`$${item.product.price}`}</ProductPrice>
-        <QtyCont>
-          <QtyTextCont>{item.quantity}</QtyTextCont>
-        </QtyCont>
-        <Total>{`$${item.product.price * item.quantity}`}</Total>
-      </InfoCont>
-    </OrderItemCont>
-  )
-}
 
 export default OrderItem

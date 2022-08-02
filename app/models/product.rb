@@ -9,7 +9,7 @@ class Product < ApplicationRecord
   validates :description_2, presence: { message: "Please add a main paragraph" }
   validates :description_3, presence: { message: "Please add a second paragraph" }
   validates :piece_image, presence: { message: "Please add a piece image" }
-  validates :image, presence: { message: "Please add an image" }
+  validates :image, presence: { message: "Please add a product image" }
 
   # validate :name_valid
   

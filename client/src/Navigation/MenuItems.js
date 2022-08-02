@@ -1,17 +1,7 @@
 import {React, useState} from 'react'
 import styled from 'styled-components'
 import Dropdown from './Dropdown.js'
-import { GiHamburgerMenu } from "react-icons/gi"
 import './NavMenu.css'
-
-
-const Button = styled.button`
-
-`
-
-const InnerButton = styled.button`
-  color: white;
-`
 
 function MenuItems({whiteNav, setCategory}) {
   const [dropdown, setDropdown] = useState(false)
@@ -78,5 +68,9 @@ function MenuItems({whiteNav, setCategory}) {
      </li>
     )
    }
+
+const Button = styled.button`
+
+`
 
 export default MenuItems

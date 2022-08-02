@@ -2,17 +2,6 @@ import React from 'react'
 import "./Menu.css"
 import styled from 'styled-components'
 
-const MenuItem = styled.div`
-  text-align: left;
-  padding: 0.7rem 1rem;
-  color:black;
-  font-size: 16px;
-  transition: .5s;
-  &&:hover {
-    background-color: #eee;
-  }
-`
-
 function Dropdown({setCategoryError, categoryError, setSelectedCategory, dropdown, setDropdown, submenus }) {
   
   function handleClick(e) {
@@ -32,7 +21,18 @@ function Dropdown({setCategoryError, categoryError, setSelectedCategory, dropdow
        </li>
       ))}
      </ul>
-    );
-   };
+    )
+   }
+
+  const MenuItem = styled.div`
+    text-align: left;
+    padding: 0.7rem 1rem;
+    color:black;
+    font-size: 16px;
+    transition: .5s;
+    &&:hover {
+      background-color: #eee;
+  }
+`
    
    export default Dropdown;

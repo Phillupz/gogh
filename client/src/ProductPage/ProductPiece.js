@@ -1,6 +1,27 @@
 import React from 'react'
 import styled from 'styled-components'
 
+function ProductPiece({selectedProduct}) {
+  return (
+    <>
+    <PieceHeader>The Piece</PieceHeader>
+    <PieceCont>
+      <PieceImageCont>
+        <InnerPieceImageCont>
+          <PieceImage src={selectedProduct.piece_image}/>
+        </InnerPieceImageCont>
+      </PieceImageCont>
+      <PieceDescCont>
+        <InnerDescCont>
+          <PieceDescription>{selectedProduct.description_2}</PieceDescription>
+          <PieceDescription>{selectedProduct.description_3}</PieceDescription>
+        </InnerDescCont>
+      </PieceDescCont>
+    </PieceCont>
+    </>
+  )
+}
+
 const PieceCont = styled.div`
   margin-left:auto;
   margin-right: auto;
@@ -56,26 +77,5 @@ const PieceHeader = styled.p`
   width:100%;
   margin-bottom: 1em;
 `
-
-function ProductPiece({selectedProduct}) {
-  return (
-    <>
-    <PieceHeader>The Piece</PieceHeader>
-    <PieceCont>
-      <PieceImageCont>
-        <InnerPieceImageCont>
-          <PieceImage src={selectedProduct.piece_image}/>
-        </InnerPieceImageCont>
-      </PieceImageCont>
-      <PieceDescCont>
-        <InnerDescCont>
-          <PieceDescription>{selectedProduct.description_2}</PieceDescription>
-          <PieceDescription>{selectedProduct.description_3}</PieceDescription>
-        </InnerDescCont>
-      </PieceDescCont>
-    </PieceCont>
-    </>
-  )
-}
 
 export default ProductPiece

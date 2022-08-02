@@ -1,15 +1,271 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-awesome-modal';
 import styled from "styled-components"
-import { VscAdd } from "react-icons/vsc"
-import { AiOutlineSend } from "react-icons/ai"
-import { BsSlack } from 'react-icons/bs';
-import OrderItem from "./OrderItem.js"
-import {AiOutlineClose} from 'react-icons/ai'
 import {BsFillImageFill} from 'react-icons/bs'
 import ImageUploading from "react-images-uploading";
 import Menu from './Menu.js'
+import { BallTriangle } from  'react-loader-spinner'
 
+export default function NewProduct({loadIcon, setLoadIcon, areThereErrors, imageExists, setImageExists, pieceImageExists, setPieceImageExists, handleClickAway, setCategoryError, imageError, imagePieceError, nameError, priceError, categoryError, description_1_Error, description_2_Error, description_3_Error, subErrors, handleProductAdd, selectedCategory, setSelectedCategory, newProdData, setNewProdData, newProdVis, setNewProdVis}) {
+  const [images, setImages] = useState([])
+  const [pieceImages, setPieceImages] = useState([])
+  const [pieceImage, setPieceImage] = useState()
+  const [image, setImage] = useState([])
+  const [addPiece, setAddPiece] = useState(false)
+
+
+  function handleSubmit() {
+    handleProductAdd(pieceImage, image)
+    setNewProdData({
+      name: "",
+      price: "",
+      category: "",
+      description_1: "",
+      description_2: "",
+      description_3: "",
+    })
+    setImageExists(false)
+    setPieceImageExists(false)
+    setAddPiece(false)
+  }
+
+  const onChange = (imageList) => {
+    setImage(imageList[0].data_url)
+    setImageExists(true)
+  }
+
+  const onPieceImageChange = (imageList) => {
+    setPieceImage(imageList[0].data_url)
+    setPieceImageExists(true)
+  }
+
+  function handleChange(e){
+    const name = e.target.name
+    const value = e.target.value
+    setNewProdData({
+      ...newProdData,
+      [name]: value
+    })
+  }
+
+  function clickAway() {
+    handleClickAway()
+    setAddPiece(false)
+  }
+
+return (
+  <section>
+    <Modal visible={newProdVis} width="1200" height="600" effect="fadeInUp" onClickAway={clickAway}>
+      {loadIcon ?
+        (
+          <LoadCont>
+            <BallTriangle color="white" height={140} width={140}/>
+            <LoadText>Loading...</LoadText>
+          </LoadCont>
+        )
+        : 
+        (
+          <div></div>
+        )
+      }
+      {addPiece ?
+        (
+        <ProductDetailsCont>
+          <LeftCont>
+            <ImageHeader>
+              <Header>Piece Image</Header>
+            </ImageHeader>
+            <DisplayCont>
+              {pieceImageExists
+                ? (
+                  <ImageCont>
+                    <ProductImageTwo name="pieceImage" src={pieceImage}/>
+                  </ImageCont>
+                ) : (
+                  <ImagePlaceholder>
+                    <BsFillImageFill color={'5a5a5a'} size={40}/>
+                    <PlaceholderText>Please Add Image</PlaceholderText>
+                  </ImagePlaceholder>
+                ) 
+              }
+            </DisplayCont>
+              <LeftBottomCont>
+                <NewImageCont>
+                <ImageUploading
+                  value={pieceImages}
+                  onChange={onPieceImageChange}
+                  maxNumber={50}
+                  dataURLKey="data_url"
+                  acceptType={["png"]}
+                >
+                  {({
+                    onImageUpload,
+                    dragProps
+                  }) => (
+                <>
+                <ImageButtonCont 
+                  onClick={onImageUpload}
+                  {...dragProps}
+                >
+                  <AddImageText>Add Image</AddImageText>
+                  <ImageIconCont>
+                    <BsFillImageFill color={'5a5a5a'} size={18}/>
+                  </ImageIconCont>
+                </ImageButtonCont>
+                </>
+              )}
+            </ImageUploading>
+              </NewImageCont>
+            </LeftBottomCont>
+          </LeftCont>
+          <RightCont>
+            <DetailsHeader>
+              <Header>Piece Details</Header>
+            </DetailsHeader>
+            <DetailsDisplayCont>
+              <DetailOptionsWrapper>
+                <DetailOptionsTwo>
+                  <OptionCont>Paragraph 1:</OptionCont>
+                </DetailOptionsTwo>
+                <DetailOptionsTwo>
+                  <OptionCont>Paragraph 2:</OptionCont>
+                </DetailOptionsTwo>
+                <DetailOptions>
+                  <OptionCont>
+                    <ErrorUl>
+                      <ErrorLi>{imagePieceError.error}</ErrorLi>
+                    </ErrorUl>
+                  </OptionCont>
+                </DetailOptions>
+              </DetailOptionsWrapper>
+              <InputCont>
+              <Description class={description_2_Error.length > 0 ? "red" : ""} value={newProdData.description_2} name="description_2" onChange={handleChange} placeholder={description_2_Error.length > 0 ? description_2_Error : "Enter Main Paragraph"} ></Description>
+                <Description class={description_3_Error.length > 0 ? "red" : ""} value={newProdData.description_3} name="description_3" onChange={handleChange} placeholder={description_3_Error.length > 0 ? description_3_Error : "Enter Second Paragraph"} ></Description>
+              </InputCont>
+            </DetailsDisplayCont>
+            <RightBottomCont>
+              <LeftButtonCont><Button onClick={handleSubmit}>Add</Button></LeftButtonCont>
+              <RightButtonCont><PieceButton class={areThereErrors} onClick={() => setAddPiece(!addPiece)}>{addPiece ? "Product" : "Piece"}</PieceButton></RightButtonCont>
+            </RightBottomCont>
+          </RightCont>
+        </ProductDetailsCont>
+        )
+        :
+        (
+        <ProductDetailsCont>
+          <LeftCont>
+            <ImageHeader>
+              <Header>Product Image</Header>
+            </ImageHeader>
+            <DisplayCont>
+              {imageExists
+                ? (
+                  <ImageCont>
+                    <ProductImage name="image" src={image}/>
+                  </ImageCont>
+                ) : (
+                  <ImagePlaceholder>
+                    <BsFillImageFill color={'5a5a5a'} size={40}/>
+                    <PlaceholderText>Please Add Image</PlaceholderText>
+                  </ImagePlaceholder>
+                ) 
+              }
+            </DisplayCont>
+              <LeftBottomCont>
+                <NewImageCont>
+                <ImageUploading
+                  value={images}
+                  onChange={onChange}
+                  maxNumber={50}
+                  dataURLKey="data_url"
+                  acceptType={["png"]}
+                >
+                  {({
+                    onImageUpload,
+                    dragProps
+                  }) => (
+                <>
+                <ImageButtonCont 
+                  onClick={onImageUpload}
+                  {...dragProps}
+                >
+                  <AddImageText>Add Image</AddImageText>
+                  <ImageIconCont>
+                    <BsFillImageFill color={'5a5a5a'} size={18}/>
+                  </ImageIconCont>
+                </ImageButtonCont>
+                </>
+              )}
+            </ImageUploading>
+              </NewImageCont>
+            </LeftBottomCont>
+          </LeftCont>
+          <RightCont>
+            <DetailsHeader>
+              <Header>Product Details</Header>
+            </DetailsHeader>
+            <DetailsDisplayCont>
+              <DetailOptionsWrapper>
+                <DetailOptions>
+                  <OptionCont>Name:</OptionCont>
+                </DetailOptions>
+                <DetailOptions>
+                  <OptionCont>Price:</OptionCont>
+                </DetailOptions>
+                <DetailOptions>
+                  <OptionCont>Category:</OptionCont>
+                </DetailOptions>
+                <DetailOptions>
+                  <OptionCont>Description:</OptionCont>
+                </DetailOptions>
+                <DetailOptions>
+                  <OptionCont>
+                    <ErrorUl>
+                      <ErrorLi>{imageError.error}</ErrorLi>
+                    </ErrorUl>
+                  </OptionCont>
+                </DetailOptions>
+              </DetailOptionsWrapper>
+              <InputCont>
+                <Input class={nameError.name.length > 0 ? "red" : ""} value={newProdData.name} name="name" onChange={handleChange} placeholder={nameError.name.length > 0 ? nameError.name : "Enter Name"} />
+                <Input class={priceError.price.length > 0 ? "red" : ""} value={newProdData.price} name="price" onChange={handleChange} placeholder={priceError.price.length > 0 ? priceError.price : "Enter Price"}  />
+                <DropCont>
+                  <Menu setCategoryError={setCategoryError} categoryError={categoryError} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory}/>
+                </DropCont>
+                <Description class={description_1_Error.length > 0 ? "red" : ""} value={newProdData.description_1} name="description_1" onChange={handleChange} placeholder={description_1_Error.length > 0 ? description_1_Error : "Enter Description"} >
+                </Description>
+              </InputCont>
+            </DetailsDisplayCont>
+            <RightBottomCont>
+              <LeftButtonCont><Button onClick={handleSubmit}>Add</Button></LeftButtonCont>
+              <RightButtonCont><PieceButton class={areThereErrors} onClick={() => setAddPiece(!addPiece)}>{addPiece ? "Product" : "Piece"}</PieceButton></RightButtonCont>
+            </RightBottomCont>
+          </RightCont>
+        </ProductDetailsCont>
+        )
+      }
+    </Modal>
+  </section>
+  )
+}
+
+const LoadText = styled.p`
+
+
+`
+
+const LoadCont = styled.div`
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  z-index:99;
+  background-color: rgba(0,0,0,0.5);
+  width: 100%;
+  height: 100%;
+  padding-top: 10em;
+  padding-bottom: 10em;
+`
 
 const ProductDetailsCont = styled.div`
   height:100%;
@@ -61,9 +317,9 @@ const ProductImageTwo = styled.img`
 `
 
 const DisplayCont =styled.div `
-display: grid;
-justify-content: center;
-align-items:center
+  display: grid;
+  justify-content: center;
+  align-items:center
 `
 
 const RightCont = styled.div`
@@ -124,7 +380,7 @@ const InputCont = styled.div`
 `
 
 const Input = styled.input`
-  height: 2em;
+  height: 34px;
   font-size: 14px;
   outline: none;
   ::placeholder,
@@ -152,12 +408,13 @@ const Description = styled.textarea`
   font-family: Josefin Sans, sans-serif;
   width: 97%;
   resize:vertical;
-  height: 36px;
-  min-height: 36px;
-  max-height: 400px;
+  height: 40px;
+  min-height: 40px;
+  max-height: 200px;
   transition: .1s;
   &::-webkit-scrollbar {
-    display: none;
+    color: transparent
+
   };
   ::placeholder,
   ::-webkit-input-placeholder {
@@ -169,13 +426,13 @@ const Description = styled.textarea`
 `
 
 const RightBottomCont = styled.div`
-height: 100%;
-width: 100%;
-border-top: 1px solid #eee;
-display: grid;
-align-content: center;
-text-align:left;
-grid-template-columns: 50% 50%;
+  height: 100%;
+  width: 100%;
+  border-top: 1px solid #eee;
+  display: grid;
+  align-content: center;
+  text-align:left;
+  grid-template-columns: 50% 50%;
 `
 
 const LeftButtonCont = styled.div`
@@ -218,17 +475,11 @@ const PieceButton = styled.button`
   background-color:white;
   text-decoration: none;
   font-family: Josefin Sans, sans-serif;
-  border: transparent;
+  border: ${props => props.class === true ? "1px solid red;" : "transparent;"};
   transition: 1s;
   &&:hover {
     border: 1px solid #ccc;
   }
-`
-
-const CloseCont = styled.div`
-  position: fixed;
-  right:7px;
-  top: 7px;
 `
 
 const LeftBottomCont = styled.div`
@@ -308,253 +559,3 @@ const ErrorLi = styled.li`
   color: red;
   font-size: 14px;
 `
-
-export default function ProductDetails({setCategoryError, imageError, imagePieceError, nameError, priceError, categoryError, description_1_Error, description_2_Error, description_3_Error, subErrors, handleProductAdd, selectedCategory, setSelectedCategory, newProdData, setNewProdData, newProdVis, setNewProdVis}) {
-  const [images, setImages] = useState([])
-  const [pieceImages, setPieceImages] = useState([])
-  const [pieceImage, setPieceImage] = useState()
-  const [image, setImage] = useState([])
-  const [imageExists, setImageExists] = useState(false)
-  const [pieceImageExists, setPieceImageExists] = useState(false)
-  const [addPiece, setAddPiece] = useState(false)
-
-  function handleSubmit() {
-    handleProductAdd(pieceImage, image)
-    setNewProdData({
-      name: "",
-      price: "",
-      category: "",
-      description_1: "",
-      description_2: "",
-      description_3: "",
-    })
-    setImageExists(false)
-    setPieceImageExists(false)
-  }
-
-  const onChange = (imageList) => {
-    setImage(imageList[0].data_url)
-    setImageExists(true)
-  }
-
-  const onPieceImageChange = (imageList) => {
-    setPieceImage(imageList[0].data_url)
-    setPieceImageExists(true)
-  }
-
-  function handleChange(e){
-    const name = e.target.name
-    const value = e.target.value
-    setNewProdData({
-      ...newProdData,
-      [name]: value
-    })
-  }
-
-return (
-  <section>
-    <Modal visible={newProdVis} width="1200" height="600" effect="fadeInUp" onClickAway={() => {
-      setNewProdVis(!newProdVis)
-      setSelectedCategory("Enter Category")
-      setPieceImageExists(false)
-      setNewProdData({
-        name: "",
-        price: "",
-        category: "",
-        description_1: "",
-        description_2: "",
-        description_3: "",
-      })
-      }}>
-      {addPiece ?
-        (
-        <ProductDetailsCont>
-          <LeftCont>
-            <ImageHeader>
-              <Header>Image</Header>
-            </ImageHeader>
-            <DisplayCont>
-              {pieceImageExists
-                ? (
-                  <ImageCont>
-                    <ProductImageTwo name="pieceImage" src={pieceImage}/>
-                  </ImageCont>
-                ) : (
-                  <ImagePlaceholder>
-                    <BsFillImageFill color={'5a5a5a'} size={40}/>
-                    <PlaceholderText>Please Add Image</PlaceholderText>
-                  </ImagePlaceholder>
-                ) 
-              }
-            </DisplayCont>
-              <LeftBottomCont>
-                <NewImageCont>
-                <ImageUploading
-                  value={pieceImages}
-                  onChange={onPieceImageChange}
-                  maxNumber={50}
-                  dataURLKey="data_url"
-                  acceptType={["png"]}
-                >
-                  {({
-                    imageList,
-                    onImageUpload,
-                    onImageRemoveAll,
-                    onImageUpdate,
-                    onImageRemove,
-                    isDragging,
-                    dragProps
-                  }) => (
-                <>
-                {/* <NewImageCont>Image</NewImageCont> */}
-                <ImageButtonCont 
-                  onClick={onImageUpload}
-                  {...dragProps}
-                >
-                  <AddImageText>Add Image</AddImageText>
-                  <ImageIconCont>
-                    <BsFillImageFill color={'5a5a5a'} size={18}/>
-                  </ImageIconCont>
-                </ImageButtonCont>
-                </>
-              )}
-            </ImageUploading>
-              </NewImageCont>
-            </LeftBottomCont>
-          </LeftCont>
-          <RightCont>
-            <DetailsHeader>
-              <Header>Piece Details</Header>
-            </DetailsHeader>
-            <DetailsDisplayCont>
-              <DetailOptionsWrapper>
-                <DetailOptionsTwo>
-                  <OptionCont>Paragraph 1:</OptionCont>
-                </DetailOptionsTwo>
-                <DetailOptionsTwo>
-                  <OptionCont>Paragraph 2:</OptionCont>
-                </DetailOptionsTwo>
-                <DetailOptions>
-                  <OptionCont>
-                    <ErrorUl>
-                      <ErrorLi>{imagePieceError.error}</ErrorLi>
-                    </ErrorUl>
-                  </OptionCont>
-                </DetailOptions>
-              </DetailOptionsWrapper>
-              <InputCont>
-              <Description class={description_2_Error.length > 0 ? "red" : ""} value={newProdData.description_2} name="description_2" onChange={handleChange} placeholder={description_2_Error.length > 0 ? description_2_Error : "Enter Main Paragraph"} ></Description>
-                <Description class={description_3_Error.length > 0 ? "red" : ""} value={newProdData.description_3} name="description_3" onChange={handleChange} placeholder={description_3_Error.length > 0 ? description_3_Error : "Enter Second Paragraph"} ></Description>
-              </InputCont>
-            </DetailsDisplayCont>
-            <RightBottomCont>
-              <LeftButtonCont><Button onClick={handleSubmit}>Add</Button></LeftButtonCont>
-              <RightButtonCont><PieceButton onClick={() => setAddPiece(!addPiece)}>{addPiece ? "Product" : "Piece"}</PieceButton></RightButtonCont>
-            </RightBottomCont>
-          </RightCont>
-        </ProductDetailsCont>
-        )
-        :
-        (
-        <ProductDetailsCont>
-          <LeftCont>
-            <ImageHeader>
-              <Header>Image</Header>
-            </ImageHeader>
-            <DisplayCont>
-              {imageExists
-                ? (
-                  <ImageCont>
-                    <ProductImage name="image" src={image}/>
-                  </ImageCont>
-                ) : (
-                  <ImagePlaceholder>
-                    <BsFillImageFill color={'5a5a5a'} size={40}/>
-                    <PlaceholderText>Please Add Image</PlaceholderText>
-                  </ImagePlaceholder>
-                ) 
-              }
-            </DisplayCont>
-              <LeftBottomCont>
-                <NewImageCont>
-                <ImageUploading
-                  value={images}
-                  onChange={onChange}
-                  maxNumber={50}
-                  dataURLKey="data_url"
-                  acceptType={["png"]}
-                >
-                  {({
-                    imageList,
-                    onImageUpload,
-                    onImageRemoveAll,
-                    onImageUpdate,
-                    onImageRemove,
-                    isDragging,
-                    dragProps
-                  }) => (
-                <>
-                {/* <NewImageCont>Image</NewImageCont> */}
-                <ImageButtonCont 
-                  onClick={onImageUpload}
-                  {...dragProps}
-                >
-                  <AddImageText>Add Image</AddImageText>
-                  <ImageIconCont>
-                    <BsFillImageFill color={'5a5a5a'} size={18}/>
-                  </ImageIconCont>
-                </ImageButtonCont>
-                </>
-              )}
-            </ImageUploading>
-              </NewImageCont>
-            </LeftBottomCont>
-          </LeftCont>
-          <RightCont>
-            <DetailsHeader>
-              <Header>Product Details</Header>
-            </DetailsHeader>
-            <DetailsDisplayCont>
-              <DetailOptionsWrapper>
-                <DetailOptions>
-                  <OptionCont>Name:</OptionCont>
-                </DetailOptions>
-                <DetailOptions>
-                  <OptionCont>Price:</OptionCont>
-                </DetailOptions>
-                <DetailOptions>
-                  <OptionCont>Category:</OptionCont>
-                </DetailOptions>
-                <DetailOptions>
-                  <OptionCont>Description:</OptionCont>
-                </DetailOptions>
-                <DetailOptions>
-                  <OptionCont>
-                    <ErrorUl>
-                      <ErrorLi>{imageError.error}</ErrorLi>
-                    </ErrorUl>
-                  </OptionCont>
-                </DetailOptions>
-              </DetailOptionsWrapper>
-              <InputCont>
-                <Input class={nameError.name.length > 0 ? "red" : ""} value={newProdData.name} name="name" onChange={handleChange} placeholder={nameError.name.length > 0 ? nameError.name : "Enter Name"} />
-                <Input class={priceError.price.length > 0 ? "red" : ""} value={newProdData.price} name="price" onChange={handleChange} placeholder={priceError.price.length > 0 ? priceError.price : "Enter Price"}  />
-                <DropCont>
-                  <Menu setCategoryError={setCategoryError} categoryError={categoryError} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory}/>
-                </DropCont>
-                <Description class={description_1_Error.length > 0 ? "red" : ""} value={newProdData.description_1} name="description_1" onChange={handleChange} placeholder={description_1_Error.length > 0 ? description_1_Error : "Enter Description"} >
-                </Description>
-              </InputCont>
-            </DetailsDisplayCont>
-            <RightBottomCont>
-              <LeftButtonCont><Button onClick={handleSubmit}>Add</Button></LeftButtonCont>
-              <RightButtonCont><PieceButton onClick={() => setAddPiece(!addPiece)}>{addPiece ? "Product" : "Piece"}</PieceButton></RightButtonCont>
-            </RightBottomCont>
-          </RightCont>
-        </ProductDetailsCont>
-        )
-      }
-    </Modal>
-  </section>
-  )
-}

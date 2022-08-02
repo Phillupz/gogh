@@ -16,6 +16,7 @@
     "react-grid-dropdown": "^0.3.1",
     "react-icons": "^4.4.0",
     "react-images-uploading": "^3.1.7",
+    "react-loader-spinner": "^5.1.7-beta.1",
     "react-numeric-input": "^2.2.3",
     "react-quantity-picker": "^1.0.3",
     "react-redux": "^8.0.2",

@@ -3,6 +3,43 @@ import styled from 'styled-components'
 import { ImLocation2 } from 'react-icons/im'
 import StarRatings from 'react-star-ratings'
 
+function ProductReview({hanleReviewClick, review, reviewVisible, setReviewVisible}) {
+
+  function handleClick() {
+    const id = review.id
+    setReviewVisible(!reviewVisible)
+    hanleReviewClick(id)
+  }
+
+  return (
+    <ProductReviewCont onClick={handleClick}>
+      <HeaderCont>
+        <LeftCont>
+          <User>{`${review.user.first} ${review.user.last}`}</User>
+          <LocationCont>
+            <ImLocation2 size={12}/>
+            <Location>{`${review.user.city}, ${review.user.state}`}</Location>
+          </LocationCont>
+        </LeftCont>
+        <ReviewCont>
+          <StarCont>
+            <StarRatings
+              rating={review.rating}
+              starRatedColor="#FFD700"
+              numberOfStars={5}
+              starEmptyColor="#ccc"
+              name='rating'
+              starDimension="13px"
+              starSpacing="5px"
+            />
+          </StarCont> 
+            <ReviewText>{review.text}</ReviewText>
+          </ReviewCont>
+       </HeaderCont>
+    </ProductReviewCont>
+  )
+}
+
 const ProductReviewCont = styled.div`
   padding: 3px;
   height: 6em;
@@ -74,43 +111,5 @@ const ReviewText = styled.p`
   white-space: pre-wrap;
   word-break: break-word;
 `
-
-function ProductReview({hanleReviewClick, review, reviewVisible, setReviewVisible}) {
-
-  function handleClick() {
-    const id = review.id
-    setReviewVisible(!reviewVisible)
-    hanleReviewClick(id)
-  }
-
-  return (
-    <ProductReviewCont onClick={handleClick}>
-      <HeaderCont>
-        <LeftCont>
-          <User>{`${review.user.first} ${review.user.last}`}</User>
-          <LocationCont>
-            <ImLocation2 size={12}/>
-            <Location>{`${review.user.city}, ${review.user.state}`}</Location>
-          </LocationCont>
-        </LeftCont>
-        <ReviewCont>
-          <StarCont>
-            <StarRatings
-              rating={review.rating}
-              starRatedColor="#FFD700"
-              numberOfStars={5}
-              starEmptyColor="#ccc"
-              name='rating'
-              starDimension="13px"
-              starSpacing="5px"
-            />
-          </StarCont> 
-            <ReviewText>{review.text}</ReviewText>
-          </ReviewCont>
-       </HeaderCont>
-    </ProductReviewCont>
-  )
-}
-
 
 export default ProductReview

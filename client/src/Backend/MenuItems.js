@@ -1,12 +1,6 @@
-import {React, useEffect, useState} from 'react'
-import styled from 'styled-components'
+import {React, useState} from 'react'
 import Dropdown from './Dropdown.js'
-import { GiHamburgerMenu } from "react-icons/gi"
 import "./Menu.css"
-
-const Button = styled.button`
-
-`
 
 function MenuItems({setCategoryError, categoryError, selectedCategory, setSelectedCategory}) {
   const [dropdown, setDropdown] = useState(false)
@@ -49,13 +43,13 @@ function MenuItems({setCategoryError, categoryError, selectedCategory, setSelect
        >
       {menuItem.submenu ? (
        <>
-        <Button
+        <button
           className={categoryError.length > 0 && selectedCategory? "backend-button-red" : "backend-button"}
           aria-haspopup="menu"
           aria-expanded={dropdown ? "true" : "false"}
           onClick={() => setDropdown((prev) => !prev)}>
           {selectedCategory}
-        </Button>
+        </button>
         <Dropdown setCategoryError={setCategoryError} categoryError={categoryError} setDropdown={setDropdown} setSelectedCategory={setSelectedCategory} dropdown={dropdown} submenus={menuItem.submenu} />
        </>
       ) : (

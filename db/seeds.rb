@@ -23,7 +23,7 @@ users = [
         state: "California",
         country: "United States",
         zip: 93529,
-        admin: true, 
+        admin: false, 
         email: "brake.chad@gmail.com", 
         password: "password1"
     },
@@ -36,7 +36,7 @@ users = [
         state: "Illinois",
         country: "United States",
         zip: 14209,
-        admin: true, 
+        admin: false, 
         email: "dev.b@gmail.com", 
         password: "password2"
     }

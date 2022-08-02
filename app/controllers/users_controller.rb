@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   rescue_from ActiveRecord::RecordInvalid, with: :unprocessable  
   before_action :authorize_user, except: [:create, :show]
+  before_action :admin, only: [:show]
 
   def index 
     render json: User.all
@@ -33,7 +34,7 @@ class UsersController < ApplicationController
   end
 
   def unprocessable
-    render json: { errors: ['Invalid Info'] }, status: :unprocessable_entity
+    render json: { errors: ['Invalid Input'] }, status: :unprocessable_entity
   end 
   
   def user_params

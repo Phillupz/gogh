@@ -4,6 +4,46 @@ import styled from 'styled-components'
 import Menu from './Menu.js'
 import CartSlider from'./CartSlider.js'
 
+function Nav({hideCheckout, setSubTotal, headerText, setHeaderText, checkoutLogout, setCheckoutLogout, handleLogout, handleCheckout, subTotal, handleSubtract, handleAdd, cart, handleItemDelete, isPaneOpen, setIsPaneOpen, setCategory, whiteNav, onLogout, setIsAuthenticated}) {
+  const match = useRouteMatch()
+  const history = useHistory()
+
+  const iconDisplay = (() => {
+    if (match.path.toLowerCase().includes("checkout")) {
+      return (
+        <div></div>
+        )
+    } else {
+      return (
+        <CartCont>
+          <CartSlider hideCheckout={hideCheckout} setSubTotal={setSubTotal} headerText={headerText} setHeaderText={setHeaderText} checkoutLogout={checkoutLogout} setCheckoutLogout={setCheckoutLogout} handleLogout={handleLogout} handleCheckout={handleCheckout} subTotal={subTotal} handleSubtract={handleSubtract} handleAdd={handleAdd} cart={cart} handleItemDelete={handleItemDelete} isPaneOpen={isPaneOpen} setIsPaneOpen={setIsPaneOpen} whiteNav={whiteNav}/>
+        </CartCont>
+        )
+    }
+  })()
+ 
+   const whiteLogo = "https://i.ibb.co/DtSL2vW/logowhite-removebg-preview.png"
+   const blackLogo = "https://i.ibb.co/KhWHXGN/Logo.png"
+
+  return (
+    <NavContainer>
+      <Logo>
+        <LogoImage onClick={() => {return history.push('/home')}} src={whiteNav ? whiteLogo : blackLogo}/>
+      </Logo>
+      <MenuCont>
+        <LeftMenuCont>
+          <IconCont>
+            <Menu whiteNav={whiteNav} setCategory={setCategory} />
+          </IconCont>
+        </LeftMenuCont>
+        <RightMenuCont>
+          <BurgerCont>{iconDisplay}</BurgerCont>
+        </RightMenuCont>
+      </MenuCont>
+    </NavContainer>
+  )
+}
+
 const NavContainer = styled.div`
   display: grid;
   align-items:center;
@@ -25,6 +65,7 @@ const Logo = styled.div`
   left: 1em;
   cursor: pointer;
 `
+
 const MenuCont = styled.div`
   width: 100%;
   height: 100%;
@@ -42,16 +83,6 @@ const RightMenuCont = styled.div`
   align-items: center;
   margin-right: 2em;
   justify-content:end
-`
-
-const RightButtonCont = styled.div`
-  height:100%;
-  width:75%;
-  display: grid;
-  justify-content: center;
-  grid-gap: 10%;
-  align-items: center;
-  justify-content: end;
 `
 
 const LeftMenuCont = styled.div`
@@ -86,45 +117,5 @@ const CartCont =styled.div`
   justify-content: center;
   align-content: center;
 `
-
-function Nav({setSubTotal, headerText, setHeaderText, checkoutLogout, setCheckoutLogout, handleLogout, handleCheckout, subTotal, handleSubtract, handleAdd, cart, handleItemDelete, isPaneOpen, setIsPaneOpen, setCategory, whiteNav, onLogout, setIsAuthenticated}) {
-  const match = useRouteMatch()
-  const history = useHistory()
-
-  const iconDisplay = (() => {
-    if (match.path.toLowerCase().includes("checkout")) {
-      return (
-        <div></div>
-        )
-    } else {
-      return (
-        <CartCont>
-          <CartSlider setSubTotal={setSubTotal} headerText={headerText} setHeaderText={setHeaderText} checkoutLogout={checkoutLogout} setCheckoutLogout={setCheckoutLogout} handleLogout={handleLogout} handleCheckout={handleCheckout} subTotal={subTotal} handleSubtract={handleSubtract} handleAdd={handleAdd} cart={cart} handleItemDelete={handleItemDelete} isPaneOpen={isPaneOpen} setIsPaneOpen={setIsPaneOpen} whiteNav={whiteNav}/>
-        </CartCont>
-        )
-    }
-  })()
- 
-   const whiteLogo = "https://i.ibb.co/DtSL2vW/logowhite-removebg-preview.png"
-   const blackLogo = "https://i.ibb.co/KhWHXGN/Logo.png"
-
-  return (
-    <NavContainer>
-      <Logo>
-        <LogoImage onClick={() => {return history.push('/home')}} src={whiteNav ? whiteLogo : blackLogo}/>
-      </Logo>
-      <MenuCont>
-        <LeftMenuCont>
-          <IconCont>
-            <Menu whiteNav={whiteNav} setCategory={setCategory} />
-          </IconCont>
-        </LeftMenuCont>
-        <RightMenuCont>
-          <BurgerCont>{iconDisplay}</BurgerCont>
-        </RightMenuCont>
-      </MenuCont>
-    </NavContainer>
-  )
-}
 
 export default Nav

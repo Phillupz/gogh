@@ -1,11 +1,64 @@
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-awesome-modal';
 import styled from "styled-components"
-import { VscAdd } from "react-icons/vsc"
-import { AiOutlineSend } from "react-icons/ai"
 import StarRatings from 'react-star-ratings'
 
-const NewReviewCont = styled.div`
+export default function ReviewDetails({setSelectedReview, handleReviewDelete, selectedReview, reviewVisible, setReviewVisible}) {
+  const [defaultImg, setDefaultImg] = useState("https://i.ibb.co/gdBmJ7L/van-gogh-logo.png")
+
+  useEffect(() => {
+    if (selectedReview) {
+      setDefaultImg(selectedReview.product.image)
+    }
+  }, [selectedReview])
+
+  console.log("d", defaultImg)
+
+  function handleDelete() {
+    const id = selectedReview.id
+    handleReviewDelete(id)
+    setReviewVisible(!reviewVisible)
+  }
+  
+    return (
+      <section>
+        <Modal visible={reviewVisible} width="600" height="500" effect="fadeInUp" onClickAway={() => {
+          setReviewVisible(!reviewVisible)
+          setSelectedReview("")
+          setDefaultImg('https://i.ibb.co/gdBmJ7L/van-gogh-logo.png')
+          }}>
+          <NewReviewCont>
+            <Header>{selectedReview ? selectedReview.product.name : "Product"}</Header>
+            <Image src={defaultImg}/>
+            <InnerReviewCont>
+              <User>{selectedReview ? `${selectedReview.user.first} ${selectedReview.user.last}` : ""}</User>
+              <ReviewCont>
+                <InputCont>
+                  <StarCont>
+                  <StarRatings
+                    rating={selectedReview ? selectedReview.rating : 0}
+                    starRatedColor="#FFD700"
+                    numberOfStars={5}
+                    starEmptyColor="#ccc"
+                    name='rating'
+                    starDimension="15px"
+                    starSpacing="5px"
+                    />
+                  </StarCont>
+                  <ReviewText placeholder='Enter Review'>{selectedReview ? selectedReview.text : ""}</ReviewText>
+                  <ButtonCont>
+                    <DeleteButton onClick={handleDelete}>Delete</DeleteButton>
+                  </ButtonCont>
+                </InputCont>
+              </ReviewCont>
+            </InnerReviewCont>
+          </NewReviewCont>
+        </Modal>
+      </section>
+    )
+  }
+
+  const NewReviewCont = styled.div`
   height:100%;
   width: 100%;
   display:grid;
@@ -100,57 +153,4 @@ const ReviewText = styled.p`
   &::-webkit-scrollbar {
     display: none;
   }
-
 `
-
-export default function ReviewDetails({handleReviewDelete, selectedReview, reviewVisible, setReviewVisible}) {
-
-  const [user, setUser] = useState([])
-
-  useEffect(() => {
-    if (selectedReview) {
-      setUser(selectedReview.user)
-    }
-  }, [selectedReview])
-
-  
-
-  function handleDelete() {
-    const id = selectedReview.id
-    handleReviewDelete(id)
-    setReviewVisible(!reviewVisible)
-  }
-  
-    return (
-      <section>
-        <Modal visible={reviewVisible} width="600" height="500" effect="fadeInUp" onClickAway={() => setReviewVisible(!reviewVisible)}>
-          <NewReviewCont>
-            <Header>Starry Night</Header>
-            <Image src={"https://i.ibb.co/chqvqG3/starry-night.png"}/>
-            <InnerReviewCont>
-              <User>{`${user.first} ${user.last}`}</User>
-              <ReviewCont>
-                <InputCont>
-                  <StarCont>
-                  <StarRatings
-                    rating={selectedReview.rating}
-                    starRatedColor="#FFD700"
-                    numberOfStars={5}
-                    starEmptyColor="#ccc"
-                    name='rating'
-                    starDimension="15px"
-                    starSpacing="5px"
-                    />
-                  </StarCont>
-                  <ReviewText placeholder='Enter Review'>{selectedReview.text}</ReviewText>
-                  <ButtonCont>
-                    <DeleteButton onClick={handleDelete}>Delete</DeleteButton>
-                  </ButtonCont>
-                </InputCont>
-              </ReviewCont>
-            </InnerReviewCont>
-          </NewReviewCont>
-        </Modal>
-      </section>
-    )
-  }

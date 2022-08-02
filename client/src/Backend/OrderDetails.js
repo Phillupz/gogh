@@ -1,13 +1,182 @@
 import {React, useEffect, useState} from "react";
 import Modal from 'react-awesome-modal';
 import styled from "styled-components"
-import { VscAdd } from "react-icons/vsc"
-import { AiOutlineSend } from "react-icons/ai"
-import { BsSlack } from 'react-icons/bs';
 import OrderItem from "./OrderItem.js"
-import {AiOutlineClose} from 'react-icons/ai'
 
-const OrderDetailCont = styled.div`
+export default function OrderDetails({handleOrderDelete, handleStatusChange, selectedOrder, orderItems, visible, setVisible}) {
+  const [orderRow, setOrderRow] = useState([])
+  const [orderTotal, setOrderTotal] = useState(0)
+  const [status, setStatus] = useState({
+    new: false,
+    shipped: false,
+    completed: false
+  })
+
+  useEffect(() => {
+      fetch(`/orders/${selectedOrder.id}`)
+      .then((r) => r.json())
+      .then((data) => {
+        setOrderTotal(selectedOrder.total.toFixed(2))
+        switch(data.status) {
+          case "new":
+            return setStatus({
+              new: true,
+              shipped: false,
+              completed: false,
+            })
+          case "shipped":
+            return setStatus({
+              new: false,
+              shipped: true,
+              completed: false,
+            })
+          case "completed":
+            return setStatus({
+              new: false,
+              shipped: false,
+              completed: true,
+            })
+          default:
+            return 
+        }
+      })
+  }, [selectedOrder])
+
+  useEffect(() => {
+    fetch(`/orders/${selectedOrder.id}`)
+    .then((r) => r.json())
+    .then((data) => {
+      setOrderRow([
+        {
+          title: `${data.user.first} ${data.user.last}`
+        },
+        {
+          title: data.user.email
+        },
+        {
+          title: data.user.street
+        },
+        {
+          title: data.user.apt === "" ? "No apt number" : data.user.apt
+        },
+        {
+          title: `${data.user.city}, ${data.user.state}`
+        },
+        {
+          title: data.user.zip
+        },
+        {
+          title: data.user.country
+        },
+      ])
+    })
+  }, [selectedOrder])
+
+    const orderColumn = [
+      {
+        title: "Name:"
+      },
+      {
+        title: "Email:"
+      },
+      {
+        title: "Address:"
+      },
+    ]
+    
+      const orderComponents = orderItems.map((item) => {
+        return <OrderItem item={item}/>
+      })
+
+      const orderColumns = orderColumn.map((column) => {
+        return (
+          <ColumnRowCont>
+            <ColumnRowNameCont>{column.title}</ColumnRowNameCont>
+          </ColumnRowCont>
+        )
+      })
+
+      const orderRows = orderRow.map((row) => {
+        return (
+          <ColumnRowCont>
+            <ColumnRowNameCont>{row.title}</ColumnRowNameCont>
+          </ColumnRowCont>
+        )
+      })
+
+    function handleChange(e){
+      handleStatusChange(e)
+    }
+
+    function handleDelete(){
+      const id = selectedOrder.id
+      handleOrderDelete(id)
+    }
+      
+    return (
+      <section>
+        <Modal visible={visible} width="1200" height="600" effect="fadeInUp" onClickAway={() => {
+          setStatus({
+            new: false,
+            shipped: false,
+            completed: false
+          })
+          setVisible(!visible)
+          }}>
+          {/* <CloseCont><AiOutlineClose color="black"/></CloseCont> */}
+          <OrderDetailCont>
+            <OrderItems>
+              <OrderItemsHeader>
+                <Header>Order Items</Header>
+                <Price>Price</Price>
+                <Quantity>Quantity</Quantity>
+                <Total>Total</Total>
+              </OrderItemsHeader>
+              <DisplayCont>
+                <OrderItemCont>
+                  {orderComponents}
+                </OrderItemCont>
+              </DisplayCont>
+              <BottomCont>
+                <OrderTotal>{`Order Total: $${orderTotal}`}</OrderTotal>
+              </BottomCont>
+            </OrderItems>
+            <Details>
+              <CutomerHeader>
+                <Header>Customer Details</Header>
+              </CutomerHeader>
+              <DetailsDisplayCont>
+                <OrderColumnCont>{orderColumns}</OrderColumnCont>
+                <OrderRowCont>{orderRows}</OrderRowCont>
+              </DetailsDisplayCont>
+              <CutomerHeader>
+                <Header>Status</Header>
+              </CutomerHeader>
+              <InputCont>
+                <InnerInputCont>
+                  <NewInput type="radio" name="status"  value="new" checked={status.new} onChange={handleChange}/>
+                  <InputTitle>New</InputTitle>
+                </InnerInputCont>
+                <InnerInputCont>
+                  <ShippedInput type="radio" name="status" value="shipped" checked={status.shipped} onChange={handleChange} />
+                  <InputTitle>Shipped</InputTitle>
+                </InnerInputCont>
+                <InnerInputCont>
+                  <CompleteInput type="radio" name="status" value="completed" checked={status.completed} onChange={handleChange} />
+                  <InputTitle>Complete</InputTitle>  
+                </InnerInputCont>
+              </InputCont>
+              <BottomCont>
+                <ButtonCont><Button onClick={handleDelete}>Delete</Button></ButtonCont>
+              </BottomCont>
+            </Details>
+          </OrderDetailCont>
+        </Modal>
+      </section>
+    )
+  }
+
+  const OrderDetailCont = styled.div`
   height:100%;
   width: 100%;
   display:grid;
@@ -130,7 +299,6 @@ const ColumnRowCont = styled.div`
   width: 96%;
   height: 40px;
   padding:1%;
-
 `
 
 const ColumnRowNameCont = styled.p`
@@ -146,8 +314,6 @@ const ColumnRowNameCont = styled.p`
 const InputCont = styled.div`
   display: grid;
   grid-template-columns: 33.33% 33.33% 33.33%;
- 
-
 `
 
 const InnerInputCont = styled.div`
@@ -165,7 +331,6 @@ const InputTitle = styled.p`
   width: 100%;
   justify-items:center;
   color:black;
-
 `
 
 const NewInput = styled.input`
@@ -210,176 +375,3 @@ const ButtonCont = styled.div`
   justify-content:center;
   align-items: center;
 `
-
-const CloseCont = styled.div`
-  position: fixed;
-  right:7px;
-  top: 7px;
-
-`
-
-export default function OrderDetails({handleOrderDelete, handleStatusChange, selectedOrder, orderItems, visible, setVisible}) {
-  const [orderRow, setOrderRow] = useState([])
-  const [orderTotal, setOrderTotal] = useState(0)
-  const [status, setStatus] = useState({
-    new: false,
-    shipped: false,
-    completed: false
-  })
-
-  useEffect(() => {
-      fetch(`/orders/${selectedOrder.id}`)
-      .then((r) => r.json())
-      .then((data) => {
-        setOrderTotal(selectedOrder.total.toFixed(2))
-        switch(data.status) {
-          case "new":
-            return setStatus({
-              new: true,
-              shipped: false,
-              completed: false,
-            })
-          case "shipped":
-            return setStatus({
-              new: false,
-              shipped: true,
-              completed: false,
-            })
-          case "completed":
-            return setStatus({
-              new: false,
-              shipped: false,
-              completed: true,
-            })
-          default:
-            return 
-        }
-      })
-  }, [selectedOrder])
-
-  useEffect(() => {
-    fetch(`/orders/${selectedOrder.id}`)
-    .then((r) => r.json())
-    .then((data) => {
-      setOrderRow([
-        {
-          title: `${data.user.first} ${data.user.last}`
-        },
-        {
-          title: data.user.email
-        },
-        {
-          title: data.user.street
-        },
-        {
-          title: data.user.apt === "" ? "No apt number" : data.user.apt
-        },
-        {
-          title: `${data.user.city}, ${data.user.state}`
-        },
-        {
-          title: data.user.zip
-        },
-        {
-          title: data.user.country
-        },
-      ])
-    })
-  }, [selectedOrder])
-
-    const orderColumn = [
-      {
-        title: "Name:"
-      },
-      {
-        title: "Email:"
-      },
-      {
-        title: "Address:"
-      },
-    ]
-    
-      const orderComponents = orderItems.map((item) => {
-        return <OrderItem item={item}/>
-      })
-
-      const orderColumns = orderColumn.map((column) => {
-        return (
-          <ColumnRowCont>
-            <ColumnRowNameCont>{column.title}</ColumnRowNameCont>
-          </ColumnRowCont>
-        )
-      })
-
-      const orderRows = orderRow.map((row) => {
-        return (
-          <ColumnRowCont>
-            <ColumnRowNameCont>{row.title}</ColumnRowNameCont>
-          </ColumnRowCont>
-        )
-      })
-
-    function handleChange(e){
-      handleStatusChange(e)
-    }
-
-    function handleDelete(){
-      const id = selectedOrder.id
-      handleOrderDelete(id)
-    }
-      
-    return (
-      <section>
-        <Modal visible={visible} width="1200" height="600" effect="fadeInUp" onClickAway={() => setVisible(!visible)}>
-          {/* <CloseCont><AiOutlineClose color="black"/></CloseCont> */}
-          <OrderDetailCont>
-            <OrderItems>
-              <OrderItemsHeader>
-                <Header>Order Items</Header>
-                <Price>Price</Price>
-                <Quantity>Quantity</Quantity>
-                <Total>Total</Total>
-              </OrderItemsHeader>
-              <DisplayCont>
-                <OrderItemCont>
-                  {orderComponents}
-                </OrderItemCont>
-              </DisplayCont>
-              <BottomCont>
-                <OrderTotal>{`Order Total: $${orderTotal}`}</OrderTotal>
-              </BottomCont>
-            </OrderItems>
-            <Details>
-              <CutomerHeader>
-                <Header>Customer Details</Header>
-              </CutomerHeader>
-              <DetailsDisplayCont>
-                <OrderColumnCont>{orderColumns}</OrderColumnCont>
-                <OrderRowCont>{orderRows}</OrderRowCont>
-              </DetailsDisplayCont>
-              <CutomerHeader>
-                <Header>Status</Header>
-              </CutomerHeader>
-              <InputCont>
-                <InnerInputCont>
-                  <NewInput type="radio" name="status"  value="new" checked={status.new} onChange={handleChange}/>
-                  <InputTitle>New</InputTitle>
-                </InnerInputCont>
-                <InnerInputCont>
-                  <ShippedInput type="radio" name="status" value="shipped" checked={status.shipped} onChange={handleChange} />
-                  <InputTitle>Shipped</InputTitle>
-                </InnerInputCont>
-                <InnerInputCont>
-                  <CompleteInput type="radio" name="status" value="completed" checked={status.completed} onChange={handleChange} />
-                  <InputTitle>Complete</InputTitle>  
-                </InnerInputCont>
-              </InputCont>
-              <BottomCont>
-                <ButtonCont><Button onClick={handleDelete}>Delete</Button></ButtonCont>
-              </BottomCont>
-            </Details>
-          </OrderDetailCont>
-        </Modal>
-      </section>
-    )
-  }

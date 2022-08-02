@@ -1,8 +1,25 @@
 import React from 'react'
 import styled from 'styled-components'
 
+function Product({handleProductClick, product}) {
+
+  function handleClick() {
+    handleProductClick(product)
+  }
+
+  return (
+    <ProductCont onClick={handleClick}>
+      <ProductImage src={product.image}/>
+      <ProductName>{product.name}</ProductName>
+      <ProductPrice>{`$${product.price}`}</ProductPrice>
+    </ProductCont>
+  )
+}
+
 const ProductCont = styled.div`
   border: 1px solid transparent;
+  transition: .5s;
+  cursor: pointer;
   &&:hover {
     border: 1px solid #eee;
   }
@@ -20,20 +37,5 @@ const ProductCont = styled.div`
 
  const ProductName = styled.p`
  `
-
-function Product({handleProductClick, product}) {
-
-  function handleClick() {
-    handleProductClick(product)
-  }
-
-  return (
-    <ProductCont onClick={handleClick}>
-      <ProductImage src={product.image}/>
-      <ProductName>{product.name}</ProductName>
-      <ProductPrice>{`$${product.price}`}</ProductPrice>
-    </ProductCont>
-  )
-}
 
 export default Product

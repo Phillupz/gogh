@@ -1,6 +1,27 @@
 import React from 'react'
 import styled from 'styled-components'
 
+function HomeProdPiece({featuredProduct}) {
+  return (
+    <>
+    <PieceHeader>The Piece</PieceHeader>
+    <PieceCont>
+      <PieceImageCont>
+        <InnerPieceImageCont>
+          <PieceImage src={featuredProduct.piece_image}/>
+        </InnerPieceImageCont>
+      </PieceImageCont>
+      <PieceDescCont>
+        <InnerDescCont>
+          <PieceDescription>{featuredProduct.description_2}</PieceDescription>
+          <PieceDescription>{featuredProduct.description_3}</PieceDescription>
+        </InnerDescCont>
+      </PieceDescCont>
+    </PieceCont>
+    </>
+  )
+}
+
 const PieceCont = styled.div`
   margin-bottom: 8em;
   margin-left:auto;
@@ -58,26 +79,5 @@ const PieceHeader = styled.p`
   margin-top: 3em;
   margin-bottom: 3em;
 `
-
-function HomeProdPiece({featuredProduct}) {
-  return (
-    <>
-    <PieceHeader>The Piece</PieceHeader>
-    <PieceCont>
-      <PieceImageCont>
-        <InnerPieceImageCont>
-          <PieceImage src={featuredProduct.piece_image}/>
-        </InnerPieceImageCont>
-      </PieceImageCont>
-      <PieceDescCont>
-        <InnerDescCont>
-          <PieceDescription>{featuredProduct.description_2}</PieceDescription>
-          <PieceDescription>{featuredProduct.description_3}</PieceDescription>
-        </InnerDescCont>
-      </PieceDescCont>
-    </PieceCont>
-    </>
-  )
-}
 
 export default HomeProdPiece

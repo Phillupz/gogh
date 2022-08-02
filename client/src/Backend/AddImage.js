@@ -1,14 +1,11 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import ImageUploading from "react-images-uploading";
-
 import "./styles.css";
 
 function AddImage() {
   const [images, setImages] = React.useState([]);
   const maxNumber = 1
   const onChange = (imageList, addUpdateIndex) => {
-    console.log(imageList, addUpdateIndex);
     setImages(imageList);
   };
 
@@ -25,13 +22,10 @@ function AddImage() {
         {({
           imageList,
           onImageUpload,
-          onImageRemoveAll,
           onImageUpdate,
-          onImageRemove,
           isDragging,
           dragProps
         }) => (
-          // write your building UI
           <div>
             <button
               style={isDragging ? { color: "red" } : null}

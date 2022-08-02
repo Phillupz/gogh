@@ -3,6 +3,37 @@ import styled from 'styled-components'
 import AddReview from './AddReview.js'
 import StarRatings from 'react-star-ratings'
 
+function ReviewBar({reviews, productReviews, handleAddReview, rating, selectedProduct}) {
+
+  return (
+    <ProductReviewCont>
+        <HeaderCont>
+          <LeftCont>
+            <Header>Reviews</Header>
+            <AddReview handleAddReview={handleAddReview} selectedProduct={selectedProduct}/>
+          </LeftCont>
+          <ReviewInfoCont>
+            <Average>{Math.round(rating*100)/100}</Average>
+            <TotalCont>
+              <StarCont>
+              <StarRatings
+                rating={rating}
+                starRatedColor="#000"
+                numberOfStars={5}
+                starEmptyColor="#ccc"
+                name='rating'
+                starDimension="18px"
+                starSpacing="5px"
+                isAggregateRating={true}
+              />
+              </StarCont>
+              <TotalReviews>{`Total Reviews: ${reviews.length}`}</TotalReviews>
+            </TotalCont>
+          </ReviewInfoCont>
+        </HeaderCont>
+      </ProductReviewCont>
+  )
+}
 
 const ProductReviewCont = styled.div`
   padding: 3px;
@@ -73,36 +104,5 @@ const TotalReviews = styled.p`
   font-size: 18px;
 `
 
-function ReviewBar({productReviews, handleAddReview, rating, selectedProduct}) {
-
-  return (
-    <ProductReviewCont>
-        <HeaderCont>
-          <LeftCont>
-            <Header>Reviews</Header>
-            <AddReview handleAddReview={handleAddReview} selectedProduct={selectedProduct}/>
-          </LeftCont>
-          <ReviewInfoCont>
-            <Average>{Math.round(rating*100)/100}</Average>
-            <TotalCont>
-              <StarCont>
-              <StarRatings
-                rating={rating}
-                starRatedColor="#000"
-                numberOfStars={5}
-                starEmptyColor="#ccc"
-                name='rating'
-                starDimension="18px"
-                starSpacing="5px"
-                isAggregateRating={true}
-              />
-              </StarCont>
-              <TotalReviews>{`Total Reviews: ${productReviews.length}`}</TotalReviews>
-            </TotalCont>
-          </ReviewInfoCont>
-        </HeaderCont>
-      </ProductReviewCont>
-  )
-}
 
 export default ReviewBar

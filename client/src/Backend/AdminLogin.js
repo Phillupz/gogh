@@ -2,6 +2,72 @@ import { React, useEffect, useState } from "react"
 import { useHistory } from "react-router-dom"
 import styled from 'styled-components'
 
+function AdminLogin({}) {
+  const history = useHistory()
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [errors, setErrors] = useState([]);
+
+  function handleSubmit(e) {
+    e.preventDefault()
+    fetch("/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({email, password}),
+    }).then((r) => {
+      if (r.ok) {
+        r.json()
+        .then((user) => {
+          if (user.admin === true) {
+            history.push('/admin/backend')
+          } else {
+           setErrors(['Admin Only'])
+          }
+        })
+      } else {
+        r.json().then((err) => setErrors(err.errors))
+      }
+    })
+  }
+
+  const errorComponents = errors.map((error) => {
+    return <ErrorLi>{error}</ErrorLi>
+  })
+
+return (
+  <MainLoginCont>
+    <LoginCont>
+      <CenterCont>
+        <Image src="https://i.ibb.co/4sQCvDG/logo2.png"/>
+        <LoginForm onSubmit={handleSubmit}>
+          <LoginInput 
+            type="text"
+            id="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <LoginInput
+            type="password"
+            id="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)} 
+          />
+          <ButtonCont>
+            <Button>login</Button>
+          </ButtonCont>
+        </LoginForm>
+        <ErrorUl>{errorComponents}</ErrorUl>
+      </CenterCont>
+    </LoginCont>
+    <LoginImage src="https://i.ibb.co/BjqVnrt/starry-logo.png" />
+  </MainLoginCont>
+ )
+}
+
 const MainLoginCont = styled.div`
   width: 70em;
   height: 35em;
@@ -43,18 +109,19 @@ const LoginForm = styled.form`
 `
 
 const LoginInput = styled.input`
-  border: 1.5px solid #ccc;
-  font-family: Josefin Sans, sans-serif;
-  font-size: 16px;
-  height: 4.5vh;
-  outline: none;
-  padding-left: 2%;
-  width: 70%;
-  margin-left: auto;
-  margin-right: auto;
-  &&:hover {
-    background-color: #eee
-  }
+font-family: Josefin Sans, sans-serif;
+font-size: 16px;
+height: 4.5vh;
+outline: none;
+padding-left: 2%;
+width: 70%;
+margin-left: auto;
+margin-right: auto;
+border: 1px solid #ccc;
+transition: .5s;
+&&:hover {
+  border: 1px solid black;
+}
 `
 
 const Button = styled.button`
@@ -63,11 +130,12 @@ const Button = styled.button`
   margin-left:auto;
   margin-right:auto;
   background-color:white;
+  font-family: Josefin Sans, sans-serif;
   border: 1px solid #ccc;
   transition: .3s;
   &&:hover {
-    background-color: #eee
-  }
+    border: 1px solid black;
+}
 `
 
 const LoginImage = styled.img`
@@ -94,87 +162,5 @@ const ErrorLi = styled.li`
   color: red;
   font-size: 12px;
 `
-
-function AdminLogin({setIsAuthenticated, setShowLogin, setUser }) {
-  const history = useHistory()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [errors, setErrors] = useState([]);
-  const [admin, setAdmin] = useState([])
-
-//   useEffect(() => {
-//     fetch('/admin')
-//     .then((res) => {
-//       if (res.ok) {
-//         res.json().then((user) => {
-//           if (user.admin === true)
-//           history.push('/admin/backend')
-//         })
-//       } else {
-//         res.json().then((err) => setErrors(err.errors))
-//       }
-//     })
-//   }, [])
-
-  function handleSubmit(e) {
-    e.preventDefault()
-    fetch("/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({email, password}),
-    }).then((r) => {
-      if (r.ok) {
-        r.json()
-        .then((user) => {
-          setAdmin(user)
-          if (user.admin === true) {
-            history.push('/admin/backend')
-          } else {
-            r.json().then((err) => setErrors(err.errors))
-          }
-        })
-      } else {
-        r.json().then((err) => setErrors(err.errors))
-      }
-    })
-  }
-
-  // const errorComponents = errors.map((error) => {
-  //   return <ErrorLi>{error}</ErrorLi>
-  // })
-
-return (
-  <MainLoginCont>
-    <LoginCont>
-      <CenterCont>
-        <Image src="https://i.ibb.co/4sQCvDG/logo2.png"/>
-        <LoginForm onSubmit={handleSubmit}>
-          <LoginInput 
-            type="text"
-            id="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <LoginInput
-            type="password"
-            id="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)} 
-          />
-          <ButtonCont>
-            <Button>login</Button>
-          </ButtonCont>
-        </LoginForm>
-        {/* <ErrorUl>{errorComponents}</ErrorUl> */}
-      </CenterCont>
-    </LoginCont>
-    <LoginImage src="https://i.ibb.co/wQyn7Lx/starry-night.png" />
-  </MainLoginCont>
- )
-}
 
 export default AdminLogin

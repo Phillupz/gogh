@@ -3,7 +3,6 @@ import MenuItems from './MenuItems.js'
 import menuItem from './MenuItems'
 import './NavMenu.css'
 
-
 function Menu({whiteNav, setCategory}) {
 
  return (
