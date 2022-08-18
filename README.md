@@ -2,10 +2,10 @@
 
 Languages and Libraries:
 
-* Javascript ES6
 * Ruby 2.7.4
 * Rails 7.0.3
 * SQLite3 1.4
+* Javascript ES6
 * React 18.2.0
 * React Router Dom 5.3.3
 * Redux Toolkit 1.8.3
