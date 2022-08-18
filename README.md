@@ -29,7 +29,7 @@ Backend:
 * Implemented user authentication
 * Configured Ruby on Rails Action Mailer
 * Integrated Stripe payment processing API
-* Seeded from complex data
+* Seeded from complex data set
 
 Frontend:
 
