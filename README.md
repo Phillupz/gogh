@@ -13,7 +13,7 @@ Languages and Libraries:
 
  ## Planning:
 
-* Drafted Entity Relationship Diagram
+* Created Entity Relationship Diagram
 * Desgined wireframe using Figma
 * Established file structure and component hierarchy 
 * Created branding mockups using Canva
