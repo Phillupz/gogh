@@ -14,7 +14,7 @@ Languages and Libraries:
  ## Planning:
 
 * Created Entity Relationship Diagram
-* Desgined wireframe using Figma
+* Designed wireframe using Figma
 * Established file structure and component hierarchy 
 * Created branding mockups using Canva
 * Generated product mockups using Printful
@@ -36,9 +36,9 @@ Frontend:
 
 * Developed ReactJS frontend
 * Utilizied basic react hooks
-* Full persistence with RESTful architecture
+* Full persistence using RESTful architecture
 * Error handling with error messages
-* Progrmatic navigation using React Router
+* Programmatic navigation using React Router
 * Utilized Redux state management system
 * Applied custom CSS utilizing Grid Layouts
 * Utilized Styled Components for reusability
