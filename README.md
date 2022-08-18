@@ -9,6 +9,7 @@ Languages and Libraries:
 * React 18.2.0
 * React Router Dom 5.3.3
 * Redux Toolkit 1.8.3
+* CSS3
 
  ## Planning:
 
