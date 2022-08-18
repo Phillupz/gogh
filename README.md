@@ -36,7 +36,7 @@ Frontend:
 
 * Developed ReactJS frontend
 * Utilizied basic react hooks
-* Full persistance with RESTful architecture
+* Full persistence with RESTful architecture
 * Error handling with error messages
 * Progrmatic navigation using React Router
 * Utilized Redux state management system
