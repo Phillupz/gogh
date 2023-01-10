@@ -24,7 +24,7 @@ Languages and Libraries:
 Backend:
 
 * Developed RESTful Rails API
-* Utilizied SQLite database
+* Utilized SQLite database
 * Established Active Record Associations
 * Created routes for CRUD operations
 * Implemented user authentication
