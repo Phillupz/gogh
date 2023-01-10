@@ -35,7 +35,7 @@ Backend:
 Frontend:
 
 * Developed ReactJS frontend
-* Utilizied basic react hooks
+* Utilized basic react hooks
 * Full persistence using RESTful architecture
 * Error handling with error messages
 * Programmatic navigation using React Router
